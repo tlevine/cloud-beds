@@ -5,6 +5,7 @@ import re
 import json
 import itertools
 from time import sleep
+from random import normalvariate
 
 import requests
 import parsedatetime.parsedatetime as pdt
@@ -17,9 +18,14 @@ def main():
     else:
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
-            print(page)
-            sleep(1)
+            loadCraigslist(page)
+            randomsleep()
 
+def randomsleep(mean = 8, sd = 4):
+    "Sleep for a random amount of time"
+    seconds=normalvariate(mean, sd)
+    if seconds>0:
+        sleep(seconds)
 
 def loadCraigslist(craigslistUrl):
     httpCraigslistUrl = 'http://' + craigslistUrl.replace(r'^https?://','')
