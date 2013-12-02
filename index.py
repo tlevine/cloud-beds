@@ -62,7 +62,7 @@ class search3Taps:
             'region':'|'.join(map(lambda x:'USA-NYM-'+x, regions)),
             'body':'~bnb.com',
         }
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=..%(max_price)d&body=%(body)s" % args
+        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=200..%(max_price)d&body=%(body)s" % args
         print(self.apiUrl)
 
     def __iter__(self):
