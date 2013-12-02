@@ -21,7 +21,8 @@ def main():
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
         #   print(page)
-            html = lxml.html.fromstring(loadCraigslist(page))
+        #   html = lxml.html.fromstring(loadCraigslist(page))
+            pass
         #   if is_date_range(html):
         #       print('Has a date range:',page)
 
@@ -75,7 +76,7 @@ class search3Taps:
     def __next__(self):
         if self.buffer == []:
             print(self.page, self.only_first_tier, self.tier)
-            if (self.page == -1 and self.only_first_tier) or (self.tier == -1):
+            if (self.page == 0 and self.tier == 1 and self.only_first_tier) or (self.tier == -1):
                 raise StopIteration
             else:
                 print('Downloading page %d, tier %d from 3Taps' % (self.page, self.tier))
