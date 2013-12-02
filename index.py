@@ -10,6 +10,7 @@ from random import normalvariate
 import requests
 import parsedatetime.parsedatetime as pdt
 cal = pdt.Calendar()
+import lxml.html
 
 def main():
     if not os.environ['APIKEY']:
@@ -18,7 +19,10 @@ def main():
     else:
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
-            loadCraigslist(page)
+            html = lxml.html.fromstring(loadCraigslist(page))
+            postingbody = html.xpath('id("postingbody")')[0].text_content()
+            if is_date_range(postingbody):
+                print('Has a date range:',page)
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
