@@ -29,9 +29,6 @@ def is_date_range(html):
 
 
     for text in [title, postingbody]:
-        if _has_end_date(text):
-            return True
-
         body = iter(text.split(' '))
         for window in _ngrams(body):
             print(window)
@@ -91,19 +88,19 @@ def is_date(tokens: list) -> bool:
             pass
         elif _token_is_date(window[0]) and set(map(_token_is_day_of_month,window[1:])) == {True}:
             pass
+        elif len(window) >= 2:
+            if not _is_end_date(window[0], window[1:]):
+                return False
         else:
             return False
 
     return True
 
-def _has_end_date(text):
-    for word in [
+def _is_end_date(prevword, window):
+    return prevword in {
         'til','till','through','until',
         '--','-',
-    ]:
-        if ' ' + word + ' ' in text:
-            return True
-    return False
+    } and is_date(window)
 
 def _token_is_immediate(token):
     return token.lower() in {
