@@ -35,6 +35,7 @@ daterange_testcases = [
     ('January 18th.',1),
     ('January 5th. $2200',1),
     ('from December',1),
+    ('Dec 15 - Feb 1.',2),
 ]
 
 date_testcases_lists = [

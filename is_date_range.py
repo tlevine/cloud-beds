@@ -19,11 +19,21 @@ def is_date_range(html):
     else:
         warnings.warn('No #postingbody found on the page')
         return False
-    body = iter(postingbody.split(' '))
-    for _ in body:
-        window = list(itertools.islice(body, 7))
-        if len(list(dates_in_tokens(window))) == 2:
-            return True
+
+    titles = html.xpath('//title')
+    if len(titles) > 0:
+        title = titles[0].text_content()
+    else:
+        warnings.warn('No <title /> found on the page')
+        return False
+
+
+    for text in [title, postingbody]:
+        body = iter(text.split(' '))
+        for window in _ngrams(body):
+            print(window)
+            if len(list(dates_in_tokens(window))) == 2:
+                return True
     return False
 
 def dates_in_tokens(tokens):
@@ -64,6 +74,7 @@ def is_date(tokens: list) -> bool:
         for func in [
             _token_is_datestamp,
             _token_is_month,
+            _token_is_immediate,
         ]:
             if func(token):
                 return True
@@ -81,6 +92,18 @@ def is_date(tokens: list) -> bool:
             return False
 
     return True
+
+def _token_is_transition(token):
+    return token.lower() in {
+        'til','till','through','until',
+        '--','-',
+    }
+
+def _token_is_immediate(token):
+    return token.lower() in {
+        'now',
+        'today',
+    }
 
 def _token_is_month(token):
     months = {
@@ -125,3 +148,7 @@ def _token_is_day_of_month(token):
 
 def _token_is_year(token):
     return False
+
+def _ngrams(tokens, n = 7):
+    l = list(tokens)
+    return (l[i:i+n] for i in range(len(l)-n))
