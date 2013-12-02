@@ -22,8 +22,8 @@ def main():
         #   print(page)
             html = lxml.html.fromstring(loadCraigslist(page))
             postingbody = html.xpath('id("postingbody")')[0].text_content()
-        #   if is_date_range(postingbody):
-        #       print('Has a date range:',page)
+            if is_date_range(postingbody):
+                print('Has a date range:',page)
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
@@ -38,7 +38,7 @@ def loadCraigslist(craigslistUrl):
     fileName = 'craigslist/' + parsedUrl.hostname.replace(r'\..*$', '') + parsedUrl.path;
 
     if not os.path.exists(fileName):
-        print('Downloading',fileName)
+        print('Downloading to ./%s' % fileName)
         try:
             os.makedirs(re.sub(r'\/[^\/]*$', '', fileName))
         except OSError:
@@ -70,6 +70,7 @@ class search3Taps:
             if (self.page == -1 and self.only_first_tier) or (self.tier == -1):
                 raise StopIteration
             else:
+                print('Downloading page %d, tier %d from 3Taps' % (self.page, self.tier))
                 response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
                 data = json.loads(response.text)
                 self.buffer = [p['external_url'] for p in data['postings']]
