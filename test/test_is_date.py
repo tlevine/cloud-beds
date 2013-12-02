@@ -60,12 +60,10 @@ day_of_month_testcases = [
     ('$30',False),
 ]
 
-@n.nottest
 def test_is_date():
     for string, expectation in date_testcases:
         yield check_is_date, string, expectation
 
-@n.nottest
 def test_token_is_month():
     for token, expectation in month_testcases:
         yield check_token_is_month, token, expectation
