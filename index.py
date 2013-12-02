@@ -57,9 +57,10 @@ class search3Taps:
     def __init__(self, apikey, rpp = 100, only_first_tier = True, max_price = 1500):
         self.only_first_tier = only_first_tier
 
-        regions = ['BRO','MAN','QUE']
+        nyc_regions = list(map(lambda x:'USA-NYM-'+x, ['BRO','MAN','QUE']))
+        regions = nyc_regions + ['USA-WAS-DIS']
         args = {'rpp':rpp,'max_price':max_price,'apikey':apikey,
-            'region':'|'.join(map(lambda x:'USA-NYM-'+x, regions)),
+            'region':'|'.join(regions),
             'body':'~bnb.com',
         }
         self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=200..%(max_price)d&body=%(body)s" % args
