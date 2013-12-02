@@ -14,7 +14,10 @@ def main():
         print('You need to set the APIKEY environment variable to your 3Taps API key.')
         exit(1)
     else:
-        body = search3Taps(2, APIKEY)
+        s = search3Taps(os.environ['APIKEY'])
+        for page in s:
+            print(page)
+            break
 
 
 def loadCraigslist(craigslistUrl):
@@ -37,12 +40,26 @@ def loadCraigslist(craigslistUrl):
         open(fileName, 'w').write(response.text)
     return open(fileName).read()
 
-def search3Taps(rpp, apikey):
-    apiUrl = "http://search.3taps.com?auth_token=" +  apikey + \
-        "&SOURCE=CRAIG&location.metro=USA-NYM&category=RSUB&retvals=external_url&rpp=" + str(rpp)
+class search3Taps:
+    def __init__(self, apikey, rpp = 2, only_first_tier = True):
+        self.apiUrl = "http://search.3taps.com?auth_token=" + apikey + \
+            "&SOURCE=CRAIG&location.metro=USA-NYM&category=RSUB&retvals=external_url&rpp=" + str(rpp)
+        self.tier = 0
+        self.page = 0
 
-    response = requests.get(apiUrl)
-    return json.loads(response.text)
+    def __iter__(self):
+        response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
+        self.data = json.loads(response.text)
+        return self
+
+    def __next__(self):
+        self.page = self.data['next_page']
+        self.tier = self.data['next_tier']
+
+        if (self.data['next_page'] == -1 and only_first_tier) or (self.data['next_tier'] == -1):
+            raise StopIteration
+
+        return self.data
 
 def is_date_range(postingbody):
     body = iter(postingbody.split(' '))
@@ -67,6 +84,4 @@ def is_date(s):
     return False
 
 if __name__ == '__main__':
-#   print(loadCraigslist('http://newyork.craigslist.org/mnh/sub/4199556907.html'))
-#   print(search3Taps(2, os.environ['APIKEY']))
     main()
