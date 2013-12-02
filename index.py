@@ -19,11 +19,11 @@ def main():
     else:
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
-            print(page)
+        #   print(page)
             html = lxml.html.fromstring(loadCraigslist(page))
             postingbody = html.xpath('id("postingbody")')[0].text_content()
-            if is_date_range(postingbody):
-                print('Has a date range:',page)
+        #   if is_date_range(postingbody):
+        #       print('Has a date range:',page)
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
@@ -54,29 +54,49 @@ def loadCraigslist(craigslistUrl):
     return open(fileName).read()
 
 class search3Taps:
-    def __init__(self, apikey, rpp = 100, only_first_tier = True):
+    def __init__(self, apikey, rpp = 100, only_first_tier = True, page = 0, tier = 0, buffer = [], next_page = None, next_tier = None):
         self.apiUrl = "http://search.3taps.com?auth_token=" + apikey + \
             "&SOURCE=CRAIG&location.metro=USA-NYM&category=RSUB&retvals=external_url&rpp=" + str(rpp)
-        self.tier = 0
-        self.page = 0
-        self.buffer = []
+
+        self.apikey = apikey
+        self.rpp = rpp
+        self.only_first_tier = only_first_tier
+
+        self.next_page = next_page
+        self.next_tier = next_tier
+        self.tier = page
+        self.page = tier
+        self.buffer = buffer
 
     def __iter__(self):
         if self.buffer == []:
+            print('iter')
             response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
-            self.data = json.loads(response.text)
-            self.buffer = [p['external_url'] for p in self.data['postings']]
-        self.result = self.buffer.pop(0)
-        return self
+
+            data = json.loads(response.text)
+            newbuffer = [p['external_url'] for p in data['postings']]
+
+            newpage = self.next_page
+            newtier = self.next_tier
+            newnext_page = data['next_page']
+            newnext_tier = data['next_tier']
+        else:
+            newbuffer = self.buffer[1:]
+            newpage = self.page
+            newtier = self.tier
+            newnext_page = self.next_page
+            newnext_tier = self.next_tier
+
+        return search3Taps(self.apikey, rpp = self.rpp, only_first_tier = self.only_first_tier,
+            page = newpage, tier = newtier, buffer = newbuffer,
+            next_page = newnext_page, next_tier = newnext_tier)
 
     def __next__(self):
-        if self.buffer == []:
-            self.page = self.data['next_page']
-            self.tier = self.data['next_tier']
-
-            if (self.data['next_page'] == -1 and only_first_tier) or (self.data['next_tier'] == -1):
+        print('next', len(self.buffer), self.next_page)
+        if (self.buffer == []) and \
+            ((self.next_page == -1 and only_first_tier) or (self.next_tier == -1)):
                 raise StopIteration
-        return self.result
+        return self.buffer[0]
 
 def is_date_range(postingbody):
     body = iter(postingbody.split(' '))
