@@ -55,8 +55,8 @@ def is_date_range(postingbody):
                 n_dates += 1
             was_date = is_date(token)
         if n_dates >= 2:
-            print(bag)
-            print(tuple(map(is_date, bag)))
+        #   print(bag)
+        #   print(tuple(map(is_date, bag)))
             return True
     return False
 
