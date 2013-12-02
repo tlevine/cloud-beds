@@ -33,6 +33,7 @@ def loadCraigslist(craigslistUrl):
     fileName = 'craigslist/' + parsedUrl.hostname.replace(r'\..*$', '') + parsedUrl.path;
 
     if not os.path.exists(fileName):
+        print('Downloading',fileName)
         try:
             os.makedirs(re.sub(r'\/[^\/]*$', '', fileName))
         except OSError:
