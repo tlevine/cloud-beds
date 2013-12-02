@@ -19,7 +19,6 @@ def main():
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
             loadCraigslist(page)
-            randomsleep()
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
@@ -45,6 +44,7 @@ def loadCraigslist(craigslistUrl):
 
         response = requests.get(requestUrl, headers = headers)
         open(fileName, 'w').write(response.text)
+        randomsleep()
     return open(fileName).read()
 
 class search3Taps:
