@@ -48,8 +48,8 @@ def is_date_range(postingbody):
     tokens = iter(postingbody.split(' '))
     daterangeness = False
     for token in tokens:
-        bag = set(itertools.islice(tokens, 3))
-        n_dates = len(list(filter(None, map(is_date, bag))))
+        bag = list(itertools.islice(tokens, 3))
+        n_dates = len(list(filter(None, map(is_date, bag[::2]))))
         if n_dates >= 2:
             print(bag)
             daterangeness = True
