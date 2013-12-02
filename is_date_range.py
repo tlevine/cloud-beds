@@ -104,6 +104,7 @@ def _is_end_date(prevword, window):
     return prevword in {
         'til','till','through','until',
         '--','-',
+        'ends', 'ending',
     } and is_date(window)
 
 def _token_is_immediate(token):
