@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import os
-import urlparse
+from urllib.parse import urlparse
 import re
+import json
 
 import requests
 
@@ -15,7 +16,7 @@ def main():
 
 def loadCraigslist(craigslistUrl):
     httpCraigslistUrl = 'http://' + craigslistUrl.replace(r'^https?://','')
-    parsedUrl = urlparse.urlparse(craigslistUrl)
+    parsedUrl = urlparse(craigslistUrl)
     requestUrl = 'http://' + re.sub(r'http://', '', httpCraigslistUrl)
     fileName = 'craigslist/' + parsedUrl.hostname.replace(r'\..*$', '') + parsedUrl.path;
 
@@ -33,6 +34,14 @@ def loadCraigslist(craigslistUrl):
         open(fileName, 'w').write(response.text)
     return open(fileName).read()
 
+def search3Taps(rpp, apikey):
+    apiUrl = "http://search.3taps.com?auth_token=" +  apikey + \
+        "&SOURCE=CRAIG&location.state=USA-NY&category=RSUB&retvals=external_url&rpp=" + str(rpp);
+
+    response = requests.get(apiUrl)
+    return json.loads(response.text)
+
 if __name__ == '__main__':
-    print loadCraigslist('http://newyork.craigslist.org/mnh/sub/4199556907.html')
+#   print(loadCraigslist('http://newyork.craigslist.org/mnh/sub/4199556907.html'))
+    print(search3Taps(2, os.environ['APIKEY']))
     #main()
