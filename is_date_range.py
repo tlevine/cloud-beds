@@ -68,11 +68,12 @@ def is_date(tokens: list) -> bool:
             if func(token):
                 return True
 
-    for i in range(1, len(tokens)):
+    for i in range(1, len(tokens) + 1):
         window = tokens[:i]
+        print(window)
         if set(map(_token_is_date,window)) == {True}:
             pass
-        elif _token_is_date(window[0]) and set(map(_token_is_month,window[1:])) == {True}:
+        elif _token_is_date(window[0]) and set(map(_token_is_day_of_month,window[1:])) == {True}:
             pass
         else:
             return False

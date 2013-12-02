@@ -83,6 +83,7 @@ day_of_month_testcases = [
     ('$30',False),
 ]
 
+@n.nottest
 def test_dates_in_tokens():
     for string, expectation in daterange_testcases:
         yield check_n_dates, string, expectation
