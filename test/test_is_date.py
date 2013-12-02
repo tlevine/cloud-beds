@@ -28,7 +28,7 @@ daterange_testcases = [
     ('December to',1),
     ('December',1),
     ('December 19th to January',2),
-    ('19th to',1),
+    ('19th to',0),
     ('December 19th',1),
     ('January 18th',1),
     ('December 19th.',1),
