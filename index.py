@@ -45,16 +45,11 @@ def search3Taps(rpp, apikey):
     return json.loads(response.text)
 
 def is_date_range(postingbody):
-    body = iter(postingbody.split(' '))
+    tokens = iter(postingbody.split(' '))
     daterangeness = False
-    for a in body:
-        window = iter(list(itertools.islice(body, 4)))
-        n_dates = 0
-        for b in window:
-            pair = list(itertools.islice(window, 2))
-            if True in set(map(is_date, pair)):
-                n_dates -= 1
-        n_dates += 1
+    for token in tokens:
+        bag = set(itertools.islice(tokens, 3))
+        n_dates = len(list(filter(None, map(is_date, bag))))
         if n_dates >= 2:
             print(bag)
             daterangeness = True
