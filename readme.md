@@ -21,4 +21,16 @@ a desk and a monitor. Thus, I am able to make full use of these
 short-term sublets of externally imposed duration. So I'm going
 to search Craigslist for these sublets and then sublet them.
 
-##
+## 3Taps Documentation
+The [official documentatio](http://docs.3taps.com/) is great, except
+that it's missing a lot of basic things like a list of the sources
+that 3Taps has, a list of categories, &c.
+
+[These slides](http://www.slideshare.net/devinfoley/3taps-apis)
+have one example query, on slide 7.
+
+This [PHP client](https://github.com/cookieflow/3taps-php-client)
+has some vaguely helpful documentation.
+
+
+
