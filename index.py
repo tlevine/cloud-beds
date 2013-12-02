@@ -41,7 +41,9 @@ def search3Taps(rpp, apikey):
     response = requests.get(apiUrl)
     return json.loads(response.text)
 
-def is_date_range(
+def is_date_range(html):
+    postingbody = html.get_element_by_id('postingbody').text_content()
+    tokens = postingbody.split(' ')
 
 if __name__ == '__main__':
 #   print(loadCraigslist('http://newyork.craigslist.org/mnh/sub/4199556907.html'))
