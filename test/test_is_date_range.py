@@ -3,13 +3,14 @@ import os
 import csv
 
 import lxml.html
+import nose.tools as n
 
 from index import is_date_range
 
 def check_is_date_range(filename, expected):
     html = lxml.html.parse(filename).getroot()
     postingbody = html.xpath('id("postingbody")')[0].text_content()
-    assert is_date_range(postingbody) == expected, filename
+    n.assert_equal(is_date_range(postingbody), expected)
 
 def test_is_date_range():
     r = csv.DictReader(open(os.path.join('fixtures','fixtures.csv')))
