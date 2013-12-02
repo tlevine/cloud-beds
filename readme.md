@@ -57,3 +57,4 @@ Maybe I should distinguish between two sorts of lengths.
 
 * Renter is going away and then coming back (about a month)
 * Renter wants someone else to finish the lease (about half a year)
+
