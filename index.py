@@ -57,8 +57,9 @@ class search3Taps:
     def __init__(self, apikey, rpp = 100, only_first_tier = True, max_price = 1500):
         self.only_first_tier = only_first_tier
 
-        args = {'rpp':rpp,'max_price':max_price,'apikey':apikey}
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=USA-NYM&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=..%(max_price)d" % args
+        args = {'rpp':rpp,'max_price':max_price,'apikey':apikey,
+            'region':'|'.join(map(lambda x:'USA-NYM-'+x, ['BRN','BRO','LON','MAN','QUE']))}
+        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=..%(max_price)d" % args
         print(self.apiUrl)
 
     def __iter__(self):
