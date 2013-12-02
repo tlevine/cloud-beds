@@ -50,3 +50,4 @@ But that's not too much of an issue just yet.
 
     http "http://reference.3taps.com/locations?auth_token=$APIKEY&state=USA-NY&level=city"
 
+It seems like craigslist is the only source for New York City, so let's stick with that for now.
