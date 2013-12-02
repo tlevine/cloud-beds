@@ -47,13 +47,16 @@ def search3Taps(rpp, apikey):
 def is_date_range(postingbody):
     tokens = iter(postingbody.split(' '))
     for token in tokens:
-        print(set(itertools.islice(tokens, 7)))
+        bag = set(itertools.islice(tokens, 7))
+        n_dates = len(list(filter(None, map(is_date, bag))))
+        if n_dates >= 2:
+            return True
+    return False
 
 def is_date(s):
     parsedatetime_can_parse = cal.parse(s)[1] == 1
     if parsedatetime_can_parse:
         return True
-
     return False
 
 if __name__ == '__main__':
