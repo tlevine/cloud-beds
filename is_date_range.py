@@ -68,6 +68,9 @@ def is_date(tokens: list) -> bool:
             if func(token):
                 return True
 
+    if tokens == []:
+        return False
+
     for i in range(1, len(tokens) + 1):
         window = tokens[:i]
         if set(map(_token_is_date,window)) == {True}:
