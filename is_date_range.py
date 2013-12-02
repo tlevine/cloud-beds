@@ -32,6 +32,7 @@ def is_date(tokens: list) -> bool:
     def _token_is_date(token):
         for func in [
             _token_is_datestamp,
+            _token_is_month,
             _token_is_day_of_month,
             _token_is_year,
         ]:
