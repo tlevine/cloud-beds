@@ -52,6 +52,14 @@ def _token_is_month(token):
 def _token_is_datestamp(token):
     return False
 
+def _is_ordinal_number(num):
+    digits = re.sub(r'[^0-9]','',num)
+    letters = re.sub(r'[^a-z]','',num.lower())
+    if digits == '':
+        return False
+    suffixes = ["th", "st", "nd", "rd", ] + ["th"] * 16
+    return letters == suffixes[int(num) % 100]
+
 def _token_is_day_of_month(token):
     digits = re.sub(r'[^0-9]','',token)
     if digits == '':
@@ -60,6 +68,9 @@ def _token_is_day_of_month(token):
                 return True
         return False
     else:
+        for forbidden in ['$','br','ave']:
+            if forbidden in token.lower():
+                return False
         potential_day = int(digits)
         return 1 <= potential_day <= 31
 
