@@ -32,4 +32,21 @@ have one example query, on slide 7.
 This [PHP client](https://github.com/cookieflow/3taps-php-client)
 has some vaguely helpful documentation.
 
-##
+### Finding sublets
+The code is `RSUB`.
+
+    $ http "http://reference.3taps.com/categories?auth_token=$APIKEY"
+    ...
+        {
+            "code": "RSUB", 
+            "group_code": "RRRR", 
+            "group_name": "Real Estate", 
+            "name": "Housing Sublets"
+        }, 
+    ...
+
+With queries like this, you can eventually figure out the location code of interest.
+But that's not too much of an issue just yet.
+
+    http "http://reference.3taps.com/locations?auth_token=$APIKEY&state=USA-NY&level=city"
+
