@@ -21,8 +21,7 @@ def main():
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
         #   print(page)
-        #   html = lxml.html.fromstring(loadCraigslist(page))
-            pass
+            html = lxml.html.fromstring(loadCraigslist(page))
         #   if is_date_range(html):
         #       print('Has a date range:',page)
 
