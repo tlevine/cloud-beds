@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import re
 import json
 import itertools
+from time import sleep
 
 import requests
 import parsedatetime.parsedatetime as pdt
@@ -17,7 +18,7 @@ def main():
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
             print(page)
-            break
+            sleep(1)
 
 
 def loadCraigslist(craigslistUrl):
@@ -41,25 +42,31 @@ def loadCraigslist(craigslistUrl):
     return open(fileName).read()
 
 class search3Taps:
-    def __init__(self, apikey, rpp = 2, only_first_tier = True):
+    def __init__(self, apikey, rpp = 100, only_first_tier = True):
         self.apiUrl = "http://search.3taps.com?auth_token=" + apikey + \
             "&SOURCE=CRAIG&location.metro=USA-NYM&category=RSUB&retvals=external_url&rpp=" + str(rpp)
         self.tier = 0
         self.page = 0
+        self.buffer = []
 
     def __iter__(self):
-        response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
-        self.data = json.loads(response.text)
+        if self.buffer == []:
+            response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
+            self.data = json.loads(response.text)
+            self.buffer = [p['external_url'] for p in self.data['postings']]
         return self
 
     def __next__(self):
-        self.page = self.data['next_page']
-        self.tier = self.data['next_tier']
+        result = self.buffer.pop(0)
+        if self.buffer == []:
+            self.page = self.data['next_page']
+            self.tier = self.data['next_tier']
 
-        if (self.data['next_page'] == -1 and only_first_tier) or (self.data['next_tier'] == -1):
-            raise StopIteration
+            if (self.data['next_page'] == -1 and only_first_tier) or (self.data['next_tier'] == -1):
+                raise StopIteration
 
-        return self.data
+            return self.data
+        return result
 
 def is_date_range(postingbody):
     body = iter(postingbody.split(' '))
