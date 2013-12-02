@@ -11,6 +11,19 @@ def main():
     df['filename'] = df['url'].map(lambda url: os.path.join('fixtures',url.split('/')[-1]))
     df['html'] = df['filename'].map(lambda x: lxml.html.parse(x).getroot())
 
+def dates_in_tokens(tokens):
+    current_date = []
+    for token in tokens:
+        if is_date(current_date + [token]):
+            current_date.append(token)
+        elif is_date(current_date):
+            yield current_date
+            current_date = []
+        elif current_date == []:
+            pass
+        else:
+            assert False
+
 def is_date(tokens: list) -> bool:
     '''
     Given a list of words, determine whether the list

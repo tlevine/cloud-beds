@@ -10,8 +10,30 @@ def check_token_is_month(token, expectation):
 def check_token_is_day_of_month(token, expectation):
     n.assert_equal(is_date_range._token_is_day_of_month(token), expectation)
 
-def test_is_ordinal_number():
-    n.assert_false(is_date_range._is_ordinal_number('24st'))
+def check_n_dates(string, expectation):
+    n.assert_equal(len(list(is_date_range.dates_in_tokens(string.split(' ')))), expectation)
+
+daterange_testcases = [
+    ('January 6 - January 31',2),
+    ('January 6 - January',2),
+    ('January 6',1),
+    ('January',1),
+    ('January 31 (Rego',1),
+    ('1br - December to January Sublet in bedstuy',2),
+    ('1br',0),
+    ('December to January',2),
+    ('January Sublet',1),
+    ('December to',1),
+    ('December',1),
+    ('December 19th to January',2),
+    ('19th to',1),
+    ('December 19th',1),
+    ('January 18th',1),
+    ('December 19th.',1),
+    ('January 18th.',1),
+    ('January 5th. $2200',1),
+    ('from December',1),
+]
 
 date_testcases = [
     ('January 6 - January 31',False),
@@ -59,6 +81,13 @@ day_of_month_testcases = [
     ('24th.',True),
     ('$30',False),
 ]
+
+def test_dates_in_tokens():
+    for string, expectation in daterange_testcases:
+        yield check_n_dates, string, expectation
+
+def test_is_ordinal_number():
+    n.assert_false(is_date_range._is_ordinal_number('24st'))
 
 def test_is_date():
     for string, expectation in date_testcases:
