@@ -50,6 +50,7 @@ date_testcases = [
     ('December 19th to January',False),
     ('19th to',False),
     ('December 19th',True),
+    ('December',True),
     ('January 18th',True),
     ('December 19th.',True),
     ('January 18th.',True),

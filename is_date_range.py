@@ -23,6 +23,8 @@ def dates_in_tokens(tokens):
             pass
         else:
             assert False
+    if current_date != []:
+        yield current_date
 
 def is_date(tokens: list) -> bool:
     '''
