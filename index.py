@@ -3,8 +3,11 @@ import os
 from urllib.parse import urlparse
 import re
 import json
+import itertools
 
 import requests
+import parsedatetime.parsedatetime as pdt
+cal = pdt.Calendar()
 
 def main():
     if not os.environ['APIKEY']:
@@ -41,9 +44,17 @@ def search3Taps(rpp, apikey):
     response = requests.get(apiUrl)
     return json.loads(response.text)
 
-def is_date_range(html):
-    postingbody = html.get_element_by_id('postingbody').text_content()
+def is_date_range(postingbody):
     tokens = postingbody.split(' ')
+    for window in itertools.islice(tokens, 10):
+        print(len(window))
+
+def is_date(s):
+    parsedatetime_can_parse = cal.parse(s)[1] == 1
+    if parsedatetime_can_parse:
+        return True
+
+    return False
 
 if __name__ == '__main__':
 #   print(loadCraigslist('http://newyork.craigslist.org/mnh/sub/4199556907.html'))
