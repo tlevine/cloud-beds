@@ -36,12 +36,14 @@ def loadCraigslist(craigslistUrl):
 
 def search3Taps(rpp, apikey):
     apiUrl = "http://search.3taps.com?auth_token=" +  apikey + \
-        "&SOURCE=CRAIG&location.state=USA-NY&category=RSUB&retvals=external_url&rpp=" + str(rpp);
+        "&SOURCE=CRAIG&location.metro=USA-NYM&category=RSUB&retvals=external_url&rpp=" + str(rpp)
 
     response = requests.get(apiUrl)
     return json.loads(response.text)
 
+def is_date_range(
+
 if __name__ == '__main__':
 #   print(loadCraigslist('http://newyork.craigslist.org/mnh/sub/4199556907.html'))
-    print(search3Taps(2, os.environ['APIKEY']))
-    #main()
+#   print(search3Taps(2, os.environ['APIKEY']))
+    main()
