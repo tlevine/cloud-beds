@@ -19,6 +19,7 @@ def main():
     else:
         s = search3Taps(os.environ['APIKEY'])
         for page in s:
+            print(page)
             html = lxml.html.fromstring(loadCraigslist(page))
             postingbody = html.xpath('id("postingbody")')[0].text_content()
             if is_date_range(postingbody):
@@ -65,19 +66,17 @@ class search3Taps:
             response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
             self.data = json.loads(response.text)
             self.buffer = [p['external_url'] for p in self.data['postings']]
+        self.result = self.buffer.pop(0)
         return self
 
     def __next__(self):
-        result = self.buffer.pop(0)
         if self.buffer == []:
             self.page = self.data['next_page']
             self.tier = self.data['next_tier']
 
             if (self.data['next_page'] == -1 and only_first_tier) or (self.data['next_tier'] == -1):
                 raise StopIteration
-
-            return self.data
-        return result
+        return self.result
 
 def is_date_range(postingbody):
     body = iter(postingbody.split(' '))
