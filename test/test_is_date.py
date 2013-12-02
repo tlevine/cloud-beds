@@ -1,11 +1,14 @@
-from is_date_range import is_date, _token_is_month
+import is_date_range
 import nose.tools as n
 
 def check_is_date(string, expectation):
-    n.assert_equal(is_date(string.split(' ')), expectation)
+    n.assert_equal(is_date_range.is_date(string.split(' ')), expectation)
 
 def check_token_is_month(token, expectation):
-    n.assert_equal(_token_is_month(token), expectation)
+    n.assert_equal(is_date_range._token_is_month(token), expectation)
+
+def check_token_is_day_of_month(token, expectation):
+    n.assert_equal(is_date_range._token_is_day_of_month(token), expectation)
 
 date_testcases = [
     ('January 6 - January 31',False),
@@ -38,10 +41,32 @@ month_testcases = [
     ('1br',False),
 ]
 
+day_of_month_testcases = [
+    ('6',True),
+    ('1br',False),
+    ('1st',True),
+    ('2br',False),
+    ('2nd',True),
+    ('3br',False),
+    ('3rd',True),
+    ('4br',False),
+    ('4th',True),
+    ('24th',True),
+    ('24st',False),
+    ('24th.',True),
+    ('$30',False),
+]
+
+@n.nottest
 def test_is_date():
     for string, expectation in date_testcases:
         yield check_is_date, string, expectation
 
+@n.nottest
 def test_token_is_month():
     for token, expectation in month_testcases:
         yield check_token_is_month, token, expectation
+
+def test_token_is_day_ofmonth():
+    for token, expectation in day_of_month_testcases:
+        yield check_token_is_day_of_month, token, expectation
