@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import warnings
 import os
 from urllib.parse import urlparse
 import re
@@ -21,8 +22,7 @@ def main():
         for page in s:
         #   print(page)
             html = lxml.html.fromstring(loadCraigslist(page))
-            postingbody = html.xpath('id("postingbody")')[0].text_content()
-            if is_date_range(postingbody):
+            if is_date_range(html):
                 print('Has a date range:',page)
 
 def randomsleep(mean = 8, sd = 4):
@@ -86,7 +86,13 @@ class search3Taps:
 
         return self.buffer.pop(0)
 
-def is_date_range(postingbody):
+def is_date_range(html):
+    postingbodies = html.xpath('id("postingbody")')
+    if len(postingbodies) > 0:
+        postingbody = postingbodies[0].text_content()
+    else:
+        warnings.warn('No #postingbody found on the page')
+        return False
     body = iter(postingbody.split(' '))
     for _ in body:
         bag = tuple(itertools.islice(body, 7))

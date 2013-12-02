@@ -8,9 +8,7 @@ import nose.tools as n
 from index import is_date_range
 
 def check_is_date_range(filename, expected):
-    html = lxml.html.parse(filename).getroot()
-    postingbody = html.xpath('id("postingbody")')[0].text_content()
-    n.assert_equal(is_date_range(postingbody), expected)
+    n.assert_equal(is_date_range(html), expected)
 
 def test_is_date_range():
     r = csv.DictReader(open(os.path.join('fixtures','fixtures.csv')))
