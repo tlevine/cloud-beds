@@ -99,8 +99,8 @@ def test_is_ordinal_number():
     n.assert_false(is_date_range._is_ordinal_number('24st'))
 
 def test_is_date():
-#   for string, expectation in date_testcases:
-#       yield check_is_date, string.split(' '), expectation
+    for string, expectation in date_testcases:
+        yield check_is_date, string.split(' '), expectation
 
     for tokens, expectation in date_testcases_lists:
         yield check_is_date, tokens, expectation
