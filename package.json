@@ -4,6 +4,7 @@
   "description": "Finding undervalued short-term sublets ====== I search Craigslist to find low-priced short-term sublets. And then I sublet them.",
   "main": "index.js",
   "directories": {
+    "start": "node index.js",
     "test": "test"
   },
   "dependencies": {

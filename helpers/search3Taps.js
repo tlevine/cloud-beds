@@ -12,7 +12,7 @@ function search3Taps(rpp, apikey, callback){
       console.log(body);
       console.log('');
     } else {
-      return callback(err, res, body);
+      return callback(body);
   })
 }
 

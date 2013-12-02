@@ -8,7 +8,7 @@ function main() {
     console.log('You need to set the APIKEY environment variable to your 3Taps API key.');
     process.exit(1);
   } else {
-    search3Taps(2, APIKEY, function(){});
+    search3Taps(2, APIKEY, function(body){console.log(body)});
   }
 }
 main();
