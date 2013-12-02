@@ -64,13 +64,27 @@ def is_date(tokens: list) -> bool:
         for func in [
             _token_is_datestamp,
             _token_is_month,
-            _token_is_day_of_month,
-            _token_is_year,
         ]:
             if func(token):
                 return True
-        return False
-    return set(map(_token_is_date,tokens)) == {True}
+
+    if set(map(_token_is_date,tokens)) == {True}:
+        return True
+
+
+    itokens = iter([None] + tokens)
+    print(tokens)
+    for _ in itokens:
+        window = list(itertools.islice(itokens, 2))
+        print(window)
+        if len(window) != 2:
+            continue
+
+        left, right = window
+        if _token_is_date(left) and _token_is_day_of_month(right):
+            return True
+
+    return False
 
 def _token_is_month(token):
     months = {
