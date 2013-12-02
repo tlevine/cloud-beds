@@ -30,9 +30,11 @@ function loadCraigslist(craigslistUrl, callback) {
 
 module.exports = loadCraigslist;
 
+/* Test
 loadCraigslist('newyork.craigslist.org/brk/sub/4221657331.html', function(stream) {
   stream.setEncoding('utf8');
   stream.on('data', function(data) {
     console.log(data)
   })
 })
+*/
