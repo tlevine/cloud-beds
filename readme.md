@@ -51,3 +51,9 @@ But that's not too much of an issue just yet.
     http "http://reference.3taps.com/locations?auth_token=$APIKEY&state=USA-NY&level=city"
 
 It seems like craigslist is the only source for New York City, so let's stick with that for now.
+
+## Longish
+Maybe I should distinguish between two sorts of lengths.
+
+* Renter is going away and then coming back (about a month)
+* Renter wants someone else to finish the lease (about half a year)
