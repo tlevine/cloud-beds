@@ -1,8 +1,8 @@
 import is_date_range
 import nose.tools as n
 
-def check_is_date(string, expectation):
-    n.assert_equal(is_date_range.is_date(string.split(' ')), expectation)
+def check_is_date(tokens, expectation):
+    n.assert_equal(is_date_range.is_date(tokens), expectation)
 
 def check_token_is_month(token, expectation):
     n.assert_equal(is_date_range._token_is_month(token), expectation)
@@ -11,7 +11,9 @@ def check_token_is_day_of_month(token, expectation):
     n.assert_equal(is_date_range._token_is_day_of_month(token), expectation)
 
 def check_n_dates(string, expectation):
-    n.assert_equal(len(list(is_date_range.dates_in_tokens(string.split(' ')))), expectation)
+    the_list = list(is_date_range.dates_in_tokens(string.split(' ')))
+    print(the_list)
+    n.assert_equal(len(the_list), expectation)
 
 daterange_testcases = [
     ('January 6 - January 31',2),
@@ -33,6 +35,11 @@ daterange_testcases = [
     ('January 18th.',1),
     ('January 5th. $2200',1),
     ('from December',1),
+]
+
+date_testcases_lists = [
+    ([], False),
+    ([''], False),
 ]
 
 date_testcases = [
@@ -92,8 +99,11 @@ def test_is_ordinal_number():
     n.assert_false(is_date_range._is_ordinal_number('24st'))
 
 def test_is_date():
-    for string, expectation in date_testcases:
-        yield check_is_date, string, expectation
+#   for string, expectation in date_testcases:
+#       yield check_is_date, string.split(' '), expectation
+
+    for tokens, expectation in date_testcases_lists:
+        yield check_is_date, tokens, expectation
 
 def test_token_is_month():
     for token, expectation in month_testcases:

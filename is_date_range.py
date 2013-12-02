@@ -23,7 +23,6 @@ def is_date_range(html):
     for _ in body:
         window = list(itertools.islice(body, 7))
         if len(list(dates_in_tokens(window))) == 2:
-            print(window)
             return True
     return False
 
@@ -33,6 +32,7 @@ def dates_in_tokens(tokens):
         if is_date(current_date + [token]):
             current_date.append(token)
         elif is_date(current_date):
+            print(current_date)
             yield current_date
             current_date = []
         elif current_date == []:
@@ -70,7 +70,6 @@ def is_date(tokens: list) -> bool:
 
     for i in range(1, len(tokens) + 1):
         window = tokens[:i]
-        print(window)
         if set(map(_token_is_date,window)) == {True}:
             pass
         elif _token_is_date(window[0]) and set(map(_token_is_day_of_month,window[1:])) == {True}:
