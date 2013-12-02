@@ -29,6 +29,9 @@ def is_date_range(html):
 
 
     for text in [title, postingbody]:
+        if 'for the month' in text:
+            return True
+
         body = iter(text.split(' '))
         for window in _ngrams(body):
 #           print(window)
