@@ -1,5 +1,6 @@
 'Train this on the fixtures.'
 import os
+import re
 
 import lxml.html
 import pandas
@@ -10,7 +11,7 @@ def main():
     df['filename'] = df['url'].map(lambda url: os.path.join('fixtures',url.split('/')[-1]))
     df['html'] = df['filename'].map(lambda x: lxml.html.parse(x).getroot())
 
-def is_date(tokens: list): -> bool
+def is_date(tokens: list) -> bool:
     '''
     Given a list of words, determine whether the list
     collectively forms a single date.
@@ -28,3 +29,39 @@ def is_date(tokens: list): -> bool
     False
 
     '''
+    def _token_is_date(token):
+        for func in [
+            _token_is_datestamp,
+            _token_is_day_of_month,
+            _token_is_year,
+        ]:
+            if func(token):
+                return True
+        return False
+    return set(map(_token_is_date,tokens)) == {True}
+
+def _token_is_month(token):
+    months = {
+        'january','february','march','april',
+        'may','june','july','august',
+        'september','october','november','december',
+    }
+    months=months.union([month[:3] for month in months])
+    return token.lower() in months
+
+def _token_is_datestamp(token):
+    return False
+
+def _token_is_day_of_month(token):
+    digits = re.sub(r'[^0-9]','',token)
+    if digits == '':
+        for word in ['first','last','end']:
+            if word in token.lower():
+                return True
+        return False
+    else:
+        potential_day = int(digits)
+        return 1 <= potential_day <= 31
+
+def _token_is_year(token):
+    return False

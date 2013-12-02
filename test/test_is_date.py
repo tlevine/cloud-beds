@@ -5,26 +5,25 @@ def check_is_date(string, expectation):
     n.assert_equal(is_date(string.split(' ')), expectation)
 
 testcases = [
-    ('January 6 - January 31',False)
-    ('January 6 - January',False)
-    ('January 6',True)
-    ('January',True)
-    ('January 31 (Rego',False)
-    ('1br - December to January Sublet in bedstuy',False)
-    ('1br',False)
-    ('December to January',False)
-    ('January Sublet',False)
-    ('December to',False)
-    ('December',True)
-    ('December 19th to January',False)
-    ('19th to',False)
-    ('December 19th',True)
-    ('January 18th',True)
-    ('December 19th.',True)
-    ('January 18th.',True)
-    (,)
-    (,)
-    (,)
+    ('January 6 - January 31',False),
+    ('January 6 - January',False),
+    ('January 6',True),
+    ('January',True),
+    ('January 31 (Rego',False),
+    ('1br - December to January Sublet in bedstuy',False),
+    ('1br',False),
+    ('December to January',False),
+    ('January Sublet',False),
+    ('December to',False),
+    ('December',True),
+    ('December 19th to January',False),
+    ('19th to',False),
+    ('December 19th',True),
+    ('January 18th',True),
+    ('December 19th.',True),
+    ('January 18th.',True),
+    ('January 5th. $2200',False),
+    ('from December',False),
 ]
 
 def test_is_date():
