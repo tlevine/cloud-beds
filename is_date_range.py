@@ -11,6 +11,20 @@ def main():
     df['filename'] = df['url'].map(lambda url: os.path.join('fixtures',url.split('/')[-1]))
     df['html'] = df['filename'].map(lambda x: lxml.html.parse(x).getroot())
 
+def is_date_range(html):
+    postingbodies = html.xpath('id("postingbody")')
+    if len(postingbodies) > 0:
+        postingbody = postingbodies[0].text_content()
+    else:
+        warnings.warn('No #postingbody found on the page')
+        return False
+    body = iter(postingbody.split(' '))
+    for _ in body:
+        window = list(itertools.islice(body, 7))
+        if len(list(dates_in_tokens(window))) == 2:
+            return True
+    return False
+
 def dates_in_tokens(tokens):
     current_date = []
     for token in tokens:
