@@ -1,6 +1,7 @@
 'Train this on the fixtures.'
 import os
 import re
+import itertools
 
 import lxml.html
 import pandas
