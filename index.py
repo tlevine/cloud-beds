@@ -22,8 +22,8 @@ def main():
         for page in s:
         #   print(page)
             html = lxml.html.fromstring(loadCraigslist(page))
-        #   if is_date_range(html):
-        #       print('Has a date range:',page)
+            if is_date_range(html):
+                print('Has a date range:',page)
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
