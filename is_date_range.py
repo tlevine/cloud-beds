@@ -31,9 +31,14 @@ def is_date_range(html):
     for text in [title, postingbody]:
         body = iter(text.split(' '))
         for window in _ngrams(body):
-            print(window)
+#           print(window)
             if len(list(dates_in_tokens(window))) == 2:
                 return True
+            else:
+                for i in range(1, len(window)):
+                    if _is_end_date(window[0], window[1:i]):
+                        print(window[0], window[1:i])
+                        return True
     return False
 
 def dates_in_tokens(tokens):
@@ -42,7 +47,6 @@ def dates_in_tokens(tokens):
         if is_date(current_date + [token]):
             current_date.append(token)
         elif is_date(current_date):
-            print(current_date)
             yield current_date
             current_date = []
         elif current_date == []:
@@ -88,9 +92,6 @@ def is_date(tokens: list) -> bool:
             pass
         elif _token_is_date(window[0]) and set(map(_token_is_day_of_month,window[1:])) == {True}:
             pass
-        elif len(window) >= 2:
-            if not _is_end_date(window[0], window[1:]):
-                return False
         else:
             return False
 
