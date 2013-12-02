@@ -23,6 +23,7 @@ def is_date_range(html):
     for _ in body:
         window = list(itertools.islice(body, 7))
         if len(list(dates_in_tokens(window))) == 2:
+            print(window)
             return True
     return False
 
