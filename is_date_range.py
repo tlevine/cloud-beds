@@ -57,8 +57,8 @@ def _is_ordinal_number(num):
     letters = re.sub(r'[^a-z]','',num.lower())
     if digits == '':
         return False
-    suffixes = ["th", "st", "nd", "rd", ] + ["th"] * 16
-    return letters == suffixes[int(num) % 100]
+    suffixes = ["th", "st", "nd", "rd", ] + ["th"] * 16 +  ["th", "st", "nd", "rd", ] + ["th"] * 7 + ["st"]
+    return letters == suffixes[int(digits) % 100]
 
 def _token_is_day_of_month(token):
     digits = re.sub(r'[^0-9]','',token)
@@ -71,8 +71,15 @@ def _token_is_day_of_month(token):
         for forbidden in ['$','br','ave']:
             if forbidden in token.lower():
                 return False
+
         potential_day = int(digits)
-        return 1 <= potential_day <= 31
+        if not 1 <= potential_day <= 31:
+            return False
+
+        if len(token) >= 3:
+            return _is_ordinal_number(token)
+        else:
+            return True
 
 def _token_is_year(token):
     return False

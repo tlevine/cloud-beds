@@ -10,6 +10,9 @@ def check_token_is_month(token, expectation):
 def check_token_is_day_of_month(token, expectation):
     n.assert_equal(is_date_range._token_is_day_of_month(token), expectation)
 
+def test_is_ordinal_number():
+    n.assert_false(is_date_range._is_ordinal_number('24st'))
+
 date_testcases = [
     ('January 6 - January 31',False),
     ('January 6 - January',False),
