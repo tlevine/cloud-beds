@@ -45,9 +45,9 @@ def search3Taps(rpp, apikey):
     return json.loads(response.text)
 
 def is_date_range(postingbody):
-    tokens = postingbody.split(' ')
-    for window in itertools.islice(tokens, 10):
-        print(len(window))
+    tokens = iter(postingbody.split(' '))
+    for token in tokens:
+        print(set(itertools.islice(tokens, 7)))
 
 def is_date(s):
     parsedatetime_can_parse = cal.parse(s)[1] == 1
