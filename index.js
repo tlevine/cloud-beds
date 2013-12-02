@@ -1,6 +1,6 @@
 // var url     = require('url');
 var search3Taps = require('./helpers/search3Taps');
-var downloadCraigslist = require('./helpers/downloadCraigslist');
+var loadCraigslist = require('./helpers/loadCraigslist');
 
 function main() {
   var APIKEY
@@ -10,7 +10,5 @@ function main() {
   } else {
     search3Taps(2, APIKEY, function(){});
   }
-
 }
-
 main();
