@@ -100,8 +100,8 @@ class search3Taps:
 
 def price(text):
     'Find the price of a listing. Use the highest dollar value in the listing.'
-    monies = re.findall(r'\$[0-9]+', re.sub(r'[, ]', '', text))
-    numbers = map(int, (money[1:] for money in monies))
+    monies = re.findall(r'[$0-9]+', re.sub(r'[, ]', '', text))
+    numbers = map(int, (money.replace('$','') for money in monies))
     return max(numbers)
 
 if __name__ == '__main__':
