@@ -58,3 +58,7 @@ Maybe I should distinguish between two sorts of lengths.
 * Renter is going away and then coming back (about a month)
 * Renter wants someone else to finish the lease (about half a year)
 
+
+## Stuff
+
+    sed 1d /tmp/short-term-sublets.tsv |sort -n|head
