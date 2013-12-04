@@ -20,11 +20,18 @@ def main():
         exit(1)
     else:
         s = search3Taps(os.environ['APIKEY'])
+        outputfile = '/tmp/short-term-sublets.csv'
+        os.remove(outputfile)
+        print('Writing short-term sublets to %s' % outputfile)
         for page in s:
         #   print(page)
             html = lxml.html.fromstring(loadCraigslist(page))
             if is_date_range(html):
                 print('Has a date range:',page)
+                h = open(outputfile, 'a')
+                h.write('%s,%d\n' % (page,price(html)))
+                h.close()
+
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
@@ -89,6 +96,11 @@ class search3Taps:
 
         return self.buffer.pop(0)
 
+def price(html):
+    'Find the price of a listing. Use the highest dollar value in the listing.'
+    monies = re.findall(r'\$[0-9]+', re.sub(r'[, ]', '', html.text_content()))
+    numbers = map(int, (money[1:] for money in monies))
+    return max(numbers)
 
 if __name__ == '__main__':
     main()
