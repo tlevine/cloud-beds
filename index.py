@@ -7,6 +7,7 @@ import json
 import itertools
 from time import sleep
 from random import normalvariate
+from is_date_range import is_date_range
 
 import requests
 import parsedatetime.parsedatetime as pdt
@@ -88,33 +89,6 @@ class search3Taps:
 
         return self.buffer.pop(0)
 
-def is_date_range(html):
-    postingbodies = html.xpath('id("postingbody")')
-    if len(postingbodies) > 0:
-        postingbody = postingbodies[0].text_content()
-    else:
-        warnings.warn('No #postingbody found on the page')
-        return False
-    body = iter(postingbody.split(' '))
-    for _ in body:
-        bag = tuple(itertools.islice(body, 7))
-        was_date = False
-        n_dates = 0
-        for token in bag:
-            if (not was_date) and  is_date(token):
-                n_dates += 1
-            was_date = is_date(token)
-        if n_dates >= 2:
-        #   print(bag)
-        #   print(tuple(map(is_date, bag)))
-            return True
-    return False
-
-def is_date(s):
-    parsedatetime_can_parse = cal.parse(s)[1] == 1
-    if parsedatetime_can_parse:
-        return True
-    return False
 
 if __name__ == '__main__':
     main()
