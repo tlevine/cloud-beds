@@ -62,3 +62,5 @@ Maybe I should distinguish between two sorts of lengths.
 ## Stuff
 
     sed 1d /tmp/short-term-sublets.tsv |sort -n|head
+
+3Taps stuff is cached in `3taps`; delete that to refresh the 3Taps cache.

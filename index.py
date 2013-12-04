@@ -89,8 +89,18 @@ class search3Taps:
                 raise StopIteration
             else:
                 print('Downloading page %d, tier %d from 3Taps' % (self.page, self.tier))
-                response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
-                data = json.loads(response.text)
+                try:
+                    os.mkdir('3taps')
+                except OSError:
+                    pass
+
+                filename_3taps = os.path.join('3taps','tier%d-page%d' % (self.tier, self.page))
+                if os.path.exists(filename_3taps):
+                    data = json.load(open(filename_3taps))
+                else:
+                    response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
+                    open(filename_3taps, 'w').write(response.text)
+                    data = json.loads(response.text)
                 self.buffer = [p['external_url'] for p in data['postings']]
                 self.page = data['next_page']
                 self.tier = data['next_tier']
