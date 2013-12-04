@@ -6,7 +6,8 @@ cases = [
     ('$1,232',1232),
     ('340$',340),
     ('oeu $ 382 oeuoeu',382),
-    ('o823423eu $ 382 oeu $83 oeu',382),
+    ('o823423eu $ 382 u',382),
+    ('o$ 382 oeu $83 oeu',382),
 ]
 
 def check_price(raw, expected):
