@@ -1,4 +1,5 @@
 'Train this on the fixtures.'
+import warnings
 import os
 import re
 import itertools
