@@ -31,7 +31,7 @@ def main():
             if is_date_range(html):
                 print('Has a date range:',page)
                 h = open(outputfile, 'a')
-                h.write('%d\t%s\n' % (price(html),page))
+                h.write('%d\t%s\n' % (price(html.text_content()),page))
                 h.close()
 
 
@@ -98,9 +98,9 @@ class search3Taps:
 
         return self.buffer.pop(0)
 
-def price(html):
+def price(text):
     'Find the price of a listing. Use the highest dollar value in the listing.'
-    monies = re.findall(r'\$[0-9]+', re.sub(r'[, ]', '', html.text_content()))
+    monies = re.findall(r'\$[0-9]+', re.sub(r'[, ]', '', text))
     numbers = map(int, (money[1:] for money in monies))
     return max(numbers)
 
