@@ -20,8 +20,10 @@ def main():
         exit(1)
     else:
         s = search3Taps(os.environ['APIKEY'])
-        outputfile = '/tmp/short-term-sublets.csv'
-        os.remove(outputfile)
+        outputfile = '/tmp/short-term-sublets.tsv'
+        h = open(outputfile, 'w')
+        h.write('url\tprice\n')
+        h.close()
         print('Writing short-term sublets to %s' % outputfile)
         for page in s:
         #   print(page)
@@ -29,7 +31,7 @@ def main():
             if is_date_range(html):
                 print('Has a date range:',page)
                 h = open(outputfile, 'a')
-                h.write('%s,%d\n' % (page,price(html)))
+                h.write('%s\t%d\n' % (page,price(html)))
                 h.close()
 
 
