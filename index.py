@@ -68,7 +68,9 @@ class search3Taps:
         self.only_first_tier = only_first_tier
 
         nyc_regions = list(map(lambda x:'USA-NYM-'+x, ['BRO','MAN','QUE']))
-        regions = nyc_regions + ['USA-WAS-DIS', 'USA-WAS-BAL']
+        dc_regions = ['USA-WAS-DIS', 'USA-WAS-BAL']
+        chicago_regions = ['USA-CHI-CIT']
+        regions = chicago_regions # nyc_regions + dc_regions + chicago_regions
         args = {'rpp':rpp,'max_price':max_price,'apikey':apikey,
             'region':'|'.join(regions),
             'body':'~bnb.com',
