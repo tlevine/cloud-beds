@@ -9,6 +9,8 @@ from time import sleep
 from random import normalvariate
 from is_date_range import is_date_range
 
+from dumptruck import DumpTruck
+
 import requests
 import parsedatetime.parsedatetime as pdt
 cal = pdt.Calendar()
