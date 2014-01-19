@@ -38,19 +38,11 @@ def main():
 
 def search_region(apikey, region):
     s = search3Taps(apikey, region)
-    outputfile = '/tmp/short-term-sublets.tsv'
-    h = open(outputfile, 'w')
-    h.write('price\turl\n')
-    h.close()
-    print('Writing short-term sublets to %s' % outputfile)
     for page in s:
-    #   print(page)
         html = lxml.html.fromstring(loadCraigslist(page))
         if is_date_range(html):
-            print('Has a date range:',page)
-            h = open(outputfile, 'a')
-            h.write('%d\t%s\n' % (price(html.text_content()),page))
-            h.close()
+            s.cursor.execute('INSERT OR REPLACE INTO results (url, price) VALUES (?,?)', (page,price(html.text_content())))
+            s.connection.commit()
 
 def randomsleep(mean = 1, sd = 0.5):
     "Sleep for a random amount of time"
@@ -95,10 +87,8 @@ class search3Taps:
         self.date = datetime.date.today()
         print(self.apiUrl)
 
-        self.connection = sqlite3.connect('3taps.sqlite')
+        self.connection = sqlite3.connect('craigslist.sqlite')
         self.cursor = self.connection.cursor()
-        self.cursor.execute(open('schema.sql').read())
-        self.connection.commit()
 
     def _is_in_cache(self):
         count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;',

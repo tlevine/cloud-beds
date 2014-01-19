@@ -6,3 +6,11 @@ CREATE TABLE IF NOT EXISTS searches (
   result JSON TEXT NOT NULL,
   UNIQUE (url, date, tier, page)
 );
+
+CREATE TABLE IF NOT EXISTS results (
+  url TEXT NOT NULL,
+  price INTEGER NOT NULL,
+--start INTEGER NOT NULL,
+--end INTEGER NOT NULL,
+  UNIQUE(url)
+);

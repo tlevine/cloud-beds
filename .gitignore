@@ -1,4 +1,5 @@
-3taps.sqlite
+*.sqlite
+*.sqlite-journal
 config.py
 craigslist
 *.tar.gz
