@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS searches (
   tier INTEGER NOT NULL,
   page INTEGER NOT NULL,
   result JSON TEXT NOT NULL,
-  UNIQUE (url, date)
+  UNIQUE (url, date, tier, page)
 );

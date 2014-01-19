@@ -16,6 +16,7 @@ import requests
 import parsedatetime.parsedatetime as pdt
 cal = pdt.Calendar()
 import lxml.html
+import threading
 
 try:
     from config import apikey, regions
@@ -32,7 +33,8 @@ except ImportError:
 
 def main():
     for region in regions:
-        search_region(apikey, region)
+       t = threading.Thread(target = search_region, args = (apikey, region))
+       t.start()
 
 def search_region(apikey, region):
     s = search3Taps(apikey, region)
@@ -50,7 +52,7 @@ def search_region(apikey, region):
             h.write('%d\t%s\n' % (price(html.text_content()),page))
             h.close()
 
-def randomsleep(mean = 8, sd = 4):
+def randomsleep(mean = 1, sd = 0.5):
     "Sleep for a random amount of time"
     seconds=normalvariate(mean, sd)
     if seconds>0:
@@ -99,11 +101,12 @@ class search3Taps:
         self.connection.commit()
 
     def _is_in_cache(self):
-        count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ?;', (self.apiUrl, self.date.isoformat())).fetchall()[0][0]
+        count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;',
+            (self.apiUrl, self.date.isoformat(), self.tier, self.page)).fetchall()[0][0]
         return count == 1
 
     def _load_from_cache(self):
-        return self.cursor.execute('SELECT result FROM searches WHERE URL = ? AND date = ?;', (self.apiUrl, self.date.isoformat())).fetchall()[0][0]
+        return self.cursor.execute('SELECT result FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;', (self.apiUrl, self.date.isoformat(), self.tier, self.page)).fetchall()[0][0]
 
     def __iter__(self):
         self.buffer = []
