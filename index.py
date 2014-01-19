@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import datetime
 import warnings
 import os
 from urllib.parse import urlparse
@@ -9,7 +10,7 @@ from time import sleep
 from random import normalvariate
 from is_date_range import is_date_range
 
-from dumptruck import DumpTruck
+import sqlite3
 
 import requests
 import parsedatetime.parsedatetime as pdt
@@ -69,36 +70,31 @@ def loadCraigslist(craigslistUrl):
     return open(fileName).read()
 
 class search3Taps:
-    def __init__(self, apikey, region, rpp = 100, only_first_tier = True, min_price = 200, max_price = 1500):
+    def __init__(self, apikey, region, rpp = 100, only_first_tier = False, min_price = 200, max_price = 1500):
         self.only_first_tier = only_first_tier
         args = {
             'apikey':apikey,
             'rpp':rpp,
             'min_price':min_price,
             'max_price':max_price,
-            'region':'|'.join(regions),
+            'region':region,
             'body':'~bnb.com',
         }
         self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=%(min_price)s..%(max_price)d&body=%(body)s" % args
         self.date = datetime.date.today()
         print(self.apiUrl)
 
-        self.dt = DumpTruck(dbname = '3taps.sqlite')
-        sample_data = {
-            'url': 'http://foo.bar/baz',
-            'date': datetime.date(2013, 1, 1),
-            'tier': 2,
-            'page': 7,
-            'result': {"a":[3,5]},
-        }
-        self.dt.create_table(sample_data, 'searches', if_not_exists = True)
+        self.connection = sqlite3.connect('3taps.sqlite')
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(open('schema.sql').read())
+        self.connection.commit()
 
     def _is_in_cache(self):
-        count = self.dt.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ?;' % (self.apiUrl, date.isoformat()))[0]['c']
+        count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ?;', (self.apiUrl, self.date.isoformat())).fetchall()[0][0]
         return count == 1
 
     def _load_from_cache(self):
-        return self.dt.execute('SELECT result FROM searches WHERE URL = ? AND date = ?;' % (self.apiUrl, self.date.isoformat()))[0]
+        return self.cursor.execute('SELECT result FROM searches WHERE URL = ? AND date = ?;', (self.apiUrl, self.date.isoformat())).fetchall()[0][0]
 
     def __iter__(self):
         self.buffer = []
@@ -123,13 +119,16 @@ class search3Taps:
                     text = self._load_from_cache()
                 else:
                     response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
-                    text = response.text.decode('latin-1')
-                    data = {
-                        'url': self.url, 'date': self.date,
-                        'tier': self.tier, 'page': self.page,
-                        'result': text,
-                    }
-                    dt.insert(data,'searches')
+                    text = response.text
+                    sql = '''
+                    INSERT INTO searches
+                    ("url","date","tier","page","result")
+                    VALUES (?,?,?,?,?)
+                    '''
+                    self.cursor.execute(sql, (self.apiUrl, self.date.isoformat(), self.tier, self.page, text))
+                    self.connection.commit()
+
+                data = json.loads(text)
                 self.buffer = [p['external_url'] for p in data['postings']]
                 self.page = data['next_page']
                 self.tier = data['next_tier']
