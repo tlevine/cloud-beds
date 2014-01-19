@@ -64,3 +64,11 @@ Maybe I should distinguish between two sorts of lengths.
     sed 1d /tmp/short-term-sublets.tsv |sort -n|head
 
 3Taps stuff is cached in `3taps`; delete that to refresh the 3Taps cache.
+
+
+## Regions
+
+        nyc_regions = list(map(lambda x:'USA-NYM-'+x, ['BRO','MAN','QUE']))
+        dc_regions = ['USA-WAS-DIS', 'USA-WAS-BAL']
+        chicago_regions = ['USA-CHI-CIT']
+        regions = chicago_regions # nyc_regions + dc_regions + chicago_regions

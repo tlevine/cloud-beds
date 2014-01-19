@@ -66,19 +66,23 @@ def loadCraigslist(craigslistUrl):
     return open(fileName).read()
 
 class search3Taps:
-    def __init__(self, apikey, rpp = 100, only_first_tier = True, max_price = 1500):
+    def __init__(self, apikey, region, rpp = 100, only_first_tier = True, min_price = 200, max_price = 1500):
         self.only_first_tier = only_first_tier
-
-        nyc_regions = list(map(lambda x:'USA-NYM-'+x, ['BRO','MAN','QUE']))
-        dc_regions = ['USA-WAS-DIS', 'USA-WAS-BAL']
-        chicago_regions = ['USA-CHI-CIT']
-        regions = chicago_regions # nyc_regions + dc_regions + chicago_regions
-        args = {'rpp':rpp,'max_price':max_price,'apikey':apikey,
+        args = {
+            'apikey':apikey,
+            'rpp':rpp,
+            'min_price':min_price,
+            'max_price':max_price,
             'region':'|'.join(regions),
             'body':'~bnb.com',
         }
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=200..%(max_price)d&body=%(body)s" % args
+        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=%(min_price)s..%(max_price)d&body=%(body)s" % args
         print(self.apiUrl)
+
+        self.dt = DumpTruck(dbname = '3taps.sqlite')
+        self.dt.create_table(
+
+    def _has_searched
 
     def __iter__(self):
         self.buffer = []
