@@ -20,22 +20,25 @@ def main():
     if not os.environ['APIKEY']:
         print('You need to set the APIKEY environment variable to your 3Taps API key.')
         exit(1)
-    else:
-        s = search3Taps(os.environ['APIKEY'])
-        outputfile = '/tmp/short-term-sublets.tsv'
-        h = open(outputfile, 'w')
-        h.write('price\turl\n')
-        h.close()
-        print('Writing short-term sublets to %s' % outputfile)
-        for page in s:
-        #   print(page)
-            html = lxml.html.fromstring(loadCraigslist(page))
-            if is_date_range(html):
-                print('Has a date range:',page)
-                h = open(outputfile, 'a')
-                h.write('%d\t%s\n' % (price(html.text_content()),page))
-                h.close()
 
+    if not os.environ['REGION']:
+        print('You need to set the REGION variable to the 3Taps region to search.')
+        exit(1)
+
+    s = search3Taps(os.environ['APIKEY'], os.environ['REGION'])
+    outputfile = '/tmp/short-term-sublets.tsv'
+    h = open(outputfile, 'w')
+    h.write('price\turl\n')
+    h.close()
+    print('Writing short-term sublets to %s' % outputfile)
+    for page in s:
+    #   print(page)
+        html = lxml.html.fromstring(loadCraigslist(page))
+        if is_date_range(html):
+            print('Has a date range:',page)
+            h = open(outputfile, 'a')
+            h.write('%d\t%s\n' % (price(html.text_content()),page))
+            h.close()
 
 def randomsleep(mean = 8, sd = 4):
     "Sleep for a random amount of time"
@@ -77,12 +80,25 @@ class search3Taps:
             'body':'~bnb.com',
         }
         self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=%(min_price)s..%(max_price)d&body=%(body)s" % args
+        self.date = datetime.date.today()
         print(self.apiUrl)
 
         self.dt = DumpTruck(dbname = '3taps.sqlite')
-        self.dt.create_table(
+        sample_data = {
+            'url': 'http://foo.bar/baz',
+            'date': datetime.date(2013, 1, 1),
+            'tier': 2,
+            'page': 7,
+            'result': {"a":[3,5]},
+        }
+        self.dt.create_table(sample_data, 'searches', if_not_exists = True)
 
-    def _has_searched
+    def _is_in_cache(self):
+        count = self.dt.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ?;' % (self.apiUrl, date.isoformat()))[0]['c']
+        return count == 1
+
+    def _load_from_cache(self):
+        return self.dt.execute('SELECT result FROM searches WHERE URL = ? AND date = ?;' % (self.apiUrl, self.date.isoformat()))[0]
 
     def __iter__(self):
         self.buffer = []
@@ -103,12 +119,17 @@ class search3Taps:
                     pass
 
                 filename_3taps = os.path.join('3taps','tier%d-page%d' % (self.tier, self.page))
-                if os.path.exists(filename_3taps):
-                    data = json.load(open(filename_3taps))
+                if self._is_in_cache():
+                    text = self._load_from_cache()
                 else:
                     response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
-                    open(filename_3taps, 'w').write(response.text)
-                    data = json.loads(response.text)
+                    text = response.text.decode('latin-1')
+                    data = {
+                        'url': self.url, 'date': self.date,
+                        'tier': self.tier, 'page': self.page,
+                        'result': text,
+                    }
+                    dt.insert(data,'searches')
                 self.buffer = [p['external_url'] for p in data['postings']]
                 self.page = data['next_page']
                 self.tier = data['next_tier']
