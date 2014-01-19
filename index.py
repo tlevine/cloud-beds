@@ -17,16 +17,25 @@ import parsedatetime.parsedatetime as pdt
 cal = pdt.Calendar()
 import lxml.html
 
+try:
+    from config import apikey, regions
+except ImportError:
+    print('You must specify the "apikey" and "regions" in config.py.')
+    exit(1)
+
+try:
+    from config import http_proxy, http_proxy_username, http_proxy_username, http_proxy_password
+    proxies = {'http':'http://' + http_proxy}
+    auth = requests.auth.HTTPProxyAuth(http_proxy_username, http_proxy_password)
+except ImportError:
+    proxies = None
+
 def main():
-    if not os.environ['APIKEY']:
-        print('You need to set the APIKEY environment variable to your 3Taps API key.')
-        exit(1)
+    for region in regions:
+        search_region(apikey, region)
 
-    if not os.environ['REGION']:
-        print('You need to set the REGION variable to the 3Taps region to search.')
-        exit(1)
-
-    s = search3Taps(os.environ['APIKEY'], os.environ['REGION'])
+def search_region(apikey, region):
+    s = search3Taps(apikey, region)
     outputfile = '/tmp/short-term-sublets.tsv'
     h = open(outputfile, 'w')
     h.write('price\turl\n')
@@ -64,7 +73,7 @@ def loadCraigslist(craigslistUrl):
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:18.0) Gecko/20100101 Firefox/18.0"
         }
 
-        response = requests.get(requestUrl, headers = headers)
+        response = requests.get(requestUrl, headers = headers, proxies = proxies, auth = auth)
         open(fileName, 'w').write(response.text)
         randomsleep()
     return open(fileName).read()
@@ -104,29 +113,29 @@ class search3Taps:
 
     def __next__(self):
         if self.buffer == []:
-            print(self.page, self.only_first_tier, self.tier)
+        #   print(self.page, self.only_first_tier, self.tier)
             if (self.page == 0 and self.tier == 1 and self.only_first_tier) or (self.tier == -1):
                 raise StopIteration
-            else:
-                print('Downloading page %d, tier %d from 3Taps' % (self.page, self.tier))
-                if self._is_in_cache():
-                    text = self._load_from_cache()
-                else:
-                    response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page})
-                    text = response.text
-                    sql = '''
-                    INSERT INTO searches
-                    ("url","date","tier","page","result")
-                    VALUES (?,?,?,?,?)
-                    '''
-                    self.cursor.execute(sql, (self.apiUrl, self.date.isoformat(), self.tier, self.page, text))
-                    self.connection.commit()
 
-                data = json.loads(text)
-                self.buffer = [p['external_url'] for p in data['postings']]
-                self.page = data['next_page']
-                self.tier = data['next_tier']
-                print('The search returned %d results.' % data['num_matches'])
+            print('Downloading page %d, tier %d from 3Taps' % (self.page, self.tier))
+            if self._is_in_cache():
+                text = self._load_from_cache()
+            else:
+                response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page}, proxies = proxies, auth = auth)
+                text = response.text
+                sql = '''
+                INSERT INTO searches
+                ("url","date","tier","page","result")
+                VALUES (?,?,?,?,?)
+                '''
+                self.cursor.execute(sql, (self.apiUrl, self.date.isoformat(), self.tier, self.page, text))
+                self.connection.commit()
+
+            data = json.loads(text)
+            self.buffer = [p['external_url'] for p in data['postings']]
+            self.page = data['next_page']
+            self.tier = data['next_tier']
+            print('The search returned %d results.' % data['num_matches'])
 
         return self.buffer.pop(0)
 
