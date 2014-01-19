@@ -109,12 +109,6 @@ class search3Taps:
                 raise StopIteration
             else:
                 print('Downloading page %d, tier %d from 3Taps' % (self.page, self.tier))
-                try:
-                    os.mkdir('3taps')
-                except OSError:
-                    pass
-
-                filename_3taps = os.path.join('3taps','tier%d-page%d' % (self.tier, self.page))
                 if self._is_in_cache():
                     text = self._load_from_cache()
                 else:
