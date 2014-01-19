@@ -135,6 +135,10 @@ class search3Taps:
                 self.connection.commit()
 
             data = json.loads(text)
+
+            if 'postings' not in data:
+                raise StopIteration
+
             self.buffer = [p['external_url'] for p in data['postings']]
             self.page = data['next_page']
             self.tier = data['next_tier']
