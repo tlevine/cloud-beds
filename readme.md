@@ -79,3 +79,7 @@ The current month is January (1), so I searched until March (3).
 ```sql
 select * from results where price < 500 and end <= 3 order by end-start, price;
 ```
+
+```sql
+select count(*) from results where start not null or end not null and url like '%austin%';
+```
