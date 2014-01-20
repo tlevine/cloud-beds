@@ -95,3 +95,5 @@ Extract these features
 * Is it available because the person is going away for a short trip?
 * Is it available because the person is moving and has to finish the lease?
 * Is it available because a new person is moving in but not for a couple weeks?
+* Datetime posted
+* Datetime updated
