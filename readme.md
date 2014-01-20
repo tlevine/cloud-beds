@@ -81,5 +81,5 @@ select * from results where price < 500 and end <= 3 order by end-start, price;
 ```
 
 ```sql
-select count(*) from results where start not null or end not null and url like '%austin%';
+select * from results where (start not null or end not null) and url like '%austin%' order by end-start; 
 ```
