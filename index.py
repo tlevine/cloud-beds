@@ -8,7 +8,7 @@ import json
 import itertools
 from time import sleep
 from random import normalvariate
-from is_date_range import is_date_range
+from is_date_range import is_date_range, dates
 
 import sqlite3
 
@@ -41,7 +41,10 @@ def search_region(apikey, region):
     for page in s:
         html = lxml.html.fromstring(loadCraigslist(page))
         if is_date_range(html):
-            s.cursor.execute('INSERT OR REPLACE INTO results (url, price) VALUES (?,?)', (page,price(html.text_content())))
+            print(dates(html))
+            break
+            s.cursor.execute('INSERT OR REPLACE INTO results (url, price, start, end) VALUES (?,?,?,?)',
+                (page,price(html.text_content()), start, end))
             s.connection.commit()
 
 def randomsleep(mean = 1, sd = 0.5):

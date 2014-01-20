@@ -3,6 +3,7 @@ import warnings
 import os
 import re
 import itertools
+import datetime
 
 import lxml.html
 import pandas
@@ -44,6 +45,47 @@ def is_date_range(html):
                         print(window[0], window[1:i])
                         return True
     return False
+
+SHORT_MONTHS = [(i,datetime.date(2013, i, 1).strftime('%b')) for i in range(1, 13)]
+LONG_MONTHS  = [(i,datetime.date(2013, i, 1).strftime('%B')) for i in range(1, 13)]
+MONTHS = {m.lower():i for i,m in SHORT_MONTHS}
+MONTHS.update({m.lower():i for i,m in LONG_MONTHS})
+
+print(MONTHS)
+
+def month(dates_list):
+    'From a date in my weird list date format to a datetime.date'
+    for e in dates_list:
+        if e.lower() in MONTHS:
+            return e
+
+def dates(html):
+    'Return my weird list date format'
+    postingbodies = html.xpath('id("postingbody")')
+    if len(postingbodies) > 0:
+        postingbody = postingbodies[0].text_content()
+    else:
+        warnings.warn('No #postingbody found on the page')
+        return False
+
+    titles = html.xpath('//title')
+    if len(titles) > 0:
+        title = titles[0].text_content()
+    else:
+        warnings.warn('No <title /> found on the page')
+        return False
+
+    for text in [title, postingbody]:
+        body = iter(text.split(' '))
+        for window in _ngrams(body):
+            d = list(dates_in_tokens(window))
+            if len(d) == 2:
+                return tuple(d)
+            else:
+                for i in range(1, len(window)):
+                    if _is_end_date(window[0], window[1:i]):
+                        return None, window[1:i]
+    return None, None
 
 def dates_in_tokens(tokens):
     current_date = []
