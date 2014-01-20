@@ -184,7 +184,7 @@ def craigsdate(text, html):
     ds = html.xpath('//p[text()="%s"]/time/@datetime' % text)
     if ds != []:
         e = dateutil.parser.parse(ds[0])
-        return datetime.datetime.astimezone(e).isoformat()
+        return int(datetime.datetime.astimezone(e).timestamp())
 
 if __name__ == '__main__':
     main()
