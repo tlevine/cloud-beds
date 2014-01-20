@@ -83,3 +83,6 @@ select * from results where price < 500 and end <= 3 order by end-start, price;
 ```sql
 select * from results where (start not null or end not null) and url like '%austin%' order by end-start; 
 ```
+```sql
+select * from results where (start not null or end not null) and url like '%austin%' and url not glob '*/sbw/*' order by end-start;
+```
