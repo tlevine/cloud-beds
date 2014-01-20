@@ -53,9 +53,10 @@ MONTHS.update({m.lower():i for i,m in LONG_MONTHS})
 
 def month(dates_list):
     'From a date in my weird list date format to a datetime.date'
-    for e in dates_list:
-        if e.lower() in MONTHS:
-            return e
+    if dates_list:
+        for e in [d.lower() for d in dates_list]:
+            if e in MONTHS:
+                return MONTHS[e]
     return None
 
 def dates(html):
