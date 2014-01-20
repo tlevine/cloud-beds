@@ -161,9 +161,16 @@ def price(text):
     'Find the price of a listing. Use the highest dollar value in the listing.'
     numbers = re.findall(r'[$0-9]+', re.sub(r'[, ]', '', text))
     monies = filter(lambda x: '$' in x, numbers)
-    integers = list(map(int, (money.replace('$','') for money in monies)))
+    integers = list(_ints(money.replace('$','') for money in monies))
     if len(integers) > 0:
         return max(integers)
+
+def _ints(monies):
+    for money in monies:
+        try:
+            yield int(money)
+        except ValueError:
+            pass
 
 if __name__ == '__main__':
     main()
