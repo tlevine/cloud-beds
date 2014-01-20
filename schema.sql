@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS results (
   price INTEGER,
   start INTEGER,
   end INTEGER,
+  furnished INTEGER NOT NULL,
   UNIQUE(url)
 );

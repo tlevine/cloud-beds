@@ -46,8 +46,9 @@ def search_location(apikey, location):
                 start, end = tuple(map(month, dates(html)))
             else:
                 start = end = None
-            s.cursor.execute('INSERT OR REPLACE INTO results (url, price, start, end) VALUES (?,?,?,?)',
-                (page,price(html.text_content()), start, end))
+            text = html.text_content()
+            s.cursor.execute('INSERT OR REPLACE INTO results (url, price, start, end, furnished) VALUES (?,?,?,?,?)',
+                (page,price(text), start, end, furnished(text)))
             s.connection.commit()
 
 def randomsleep(mean = 1, sd = 0.5):
@@ -164,6 +165,9 @@ def price(text):
     integers = list(_ints(money.replace('$','') for money in monies))
     if len(integers) > 0:
         return max(integers)
+
+def furnished(text):
+    return 'furnished' in text and not 'unfurnished' in text
 
 def _ints(monies):
     for money in monies:
