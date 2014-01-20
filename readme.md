@@ -86,3 +86,12 @@ select * from results where (start not null or end not null) and url like '%aust
 ```sql
 select * from results where (start not null or end not null) and url like '%austin%' and url not glob '*/sbw/*' order by end-start;
 ```
+
+## To do
+Extract these features
+
+* Furnished or not
+* Has laudnry
+* Is it available because the person is going away for a short trip?
+* Is it available because the person is moving and has to finish the lease?
+* Is it available because a new person is moving in but not for a couple weeks?
