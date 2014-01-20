@@ -75,7 +75,7 @@ def loadCraigslist(craigslistUrl):
     return open(fileName).read()
 
 # http://docs.3taps.com/reference_api.html
-levels = )
+levels = {
     'country',
     'state',
     'metro',
