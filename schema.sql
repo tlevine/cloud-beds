@@ -13,5 +13,7 @@ CREATE TABLE IF NOT EXISTS results (
   start INTEGER,
   end INTEGER,
   furnished INTEGER NOT NULL,
+  posted DATETIME TEXT NOT NULL,
+  updated DATETIME TEXT NOT NULL,
   UNIQUE(url)
 );

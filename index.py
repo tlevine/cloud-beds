@@ -9,6 +9,7 @@ import itertools
 from time import sleep
 from random import normalvariate
 from is_date_range import is_date_range, dates, month
+import dateutil
 
 import sqlite3
 
@@ -47,8 +48,11 @@ def search_location(apikey, location):
             else:
                 start = end = None
             text = html.text_content()
-            s.cursor.execute('INSERT OR REPLACE INTO results (url, price, start, end, furnished) VALUES (?,?,?,?,?)',
-                (page,price(text), start, end, furnished(text)))
+            s.cursor.execute('''
+                INSERT OR REPLACE INTO results
+                  (url, price, start, end, furnished, posted, updated)
+                VALUES (?,?,?,?,?,?,?)''',
+                (page,price(text), start, end, furnished(text), datetime_posted(html), datetime_updated(html)))
             s.connection.commit()
 
 def randomsleep(mean = 1, sd = 0.5):
@@ -175,6 +179,16 @@ def _ints(monies):
             yield int(money)
         except ValueError:
             pass
+
+def datetime_posted(html):
+    d = html.xpath('//p[text()="Posted: "]/time/@datetime')[0]
+    e = dateutil.parser.parse(d)
+    return datetime.datetime.astimezone(e).isoformat()
+
+def datetime_updated(html):
+    d = html.xpath('//p[text()="Updated: "]/time/@datetime')[0]
+    e = dateutil.parser.parse(d)
+    return datetime.datetime.astimezone(e).isoformat()
 
 if __name__ == '__main__':
     main()
