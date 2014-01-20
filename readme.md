@@ -72,3 +72,10 @@ Maybe I should distinguish between two sorts of lengths.
         dc_regions = ['USA-WAS-DIS', 'USA-WAS-BAL']
         chicago_regions = ['USA-CHI-CIT']
         regions = chicago_regions # nyc_regions + dc_regions + chicago_regions
+
+## Nice queries
+The current month is January (1), so I searched until March (3).
+
+```sql
+select * from results where price < 500 and end <= 3 order by end-start, price;
+```
