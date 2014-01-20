@@ -19,9 +19,9 @@ import lxml.html
 import threading
 
 try:
-    from config import apikey, regions
+    from config import apikey, locations
 except ImportError:
-    print('You must specify the "apikey" and "regions" in config.py.')
+    print('You must specify the "apikey" and "locations" in config.py.')
     exit(1)
 
 try:
@@ -32,12 +32,12 @@ except ImportError:
     proxies = None
 
 def main():
-    for region in regions:
-       t = threading.Thread(target = search_region, args = (apikey, region))
+    for location in locations:
+       t = threading.Thread(target = search_location, args = (apikey, location))
        t.start()
 
-def search_region(apikey, region):
-    s = search3Taps(apikey, region)
+def search_location(apikey, location):
+    s = search3Taps(apikey, location)
     for page in s:
         html = lxml.html.fromstring(loadCraigslist(page))
         if is_date_range(html):
@@ -74,18 +74,33 @@ def loadCraigslist(craigslistUrl):
         randomsleep()
     return open(fileName).read()
 
+# http://docs.3taps.com/reference_api.html
+levels = )
+    'country',
+    'state',
+    'metro',
+    'region',
+    'county',
+    'city',
+    'locality',
+    'zipcode',
+}
 class search3Taps:
-    def __init__(self, apikey, region, rpp = 100, only_first_tier = False, min_price = 200, max_price = 1500):
+    def __init__(self, apikey, location, rpp = 100, only_first_tier = False, min_price = 200, max_price = 1500):
         self.only_first_tier = only_first_tier
+        level, value = location
+        if level not in levels:
+            raise ValueError('"level" must be one of %s.' % ', '.join(levels))
         args = {
             'apikey':apikey,
             'rpp':rpp,
             'min_price':min_price,
             'max_price':max_price,
-            'region':region,
+            'level': level,
+            'value': value,
             'body':'~bnb.com',
         }
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.region=%(region)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=%(min_price)s..%(max_price)d&body=%(body)s" % args
+        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=%(min_price)s..%(max_price)d&body=%(body)s" % args
         self.date = datetime.date.today()
         print(self.apiUrl)
 
