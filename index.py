@@ -38,10 +38,14 @@ def main():
 
 def search_location(apikey, location):
     s = search3Taps(apikey, location)
+    finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
     for page in s:
-        html = lxml.html.fromstring(loadCraigslist(page))
-        if is_date_range(html):
-            start, end = tuple(map(month, dates(html)))
+        if page not in finished_pages:
+            html = lxml.html.fromstring(loadCraigslist(page))
+            if is_date_range(html):
+                start, end = tuple(map(month, dates(html)))
+            else:
+                start = end = None
             s.cursor.execute('INSERT OR REPLACE INTO results (url, price, start, end) VALUES (?,?,?,?)',
                 (page,price(html.text_content()), start, end))
             s.connection.commit()
@@ -157,8 +161,9 @@ def price(text):
     'Find the price of a listing. Use the highest dollar value in the listing.'
     numbers = re.findall(r'[$0-9]+', re.sub(r'[, ]', '', text))
     monies = filter(lambda x: '$' in x, numbers)
-    integers = map(int, (money.replace('$','') for money in monies))
-    return max(integers)
+    integers = list(map(int, (money.replace('$','') for money in monies)))
+    if len(integers) > 0:
+        return max(integers)
 
 if __name__ == '__main__':
     main()

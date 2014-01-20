@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS searches (
 
 CREATE TABLE IF NOT EXISTS results (
   url TEXT NOT NULL,
-  price INTEGER NOT NULL,
+  price INTEGER,
   start INTEGER,
   end INTEGER,
   UNIQUE(url)
