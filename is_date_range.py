@@ -51,13 +51,12 @@ LONG_MONTHS  = [(i,datetime.date(2013, i, 1).strftime('%B')) for i in range(1, 1
 MONTHS = {m.lower():i for i,m in SHORT_MONTHS}
 MONTHS.update({m.lower():i for i,m in LONG_MONTHS})
 
-print(MONTHS)
-
 def month(dates_list):
     'From a date in my weird list date format to a datetime.date'
     for e in dates_list:
         if e.lower() in MONTHS:
             return e
+    return None
 
 def dates(html):
     'Return my weird list date format'
