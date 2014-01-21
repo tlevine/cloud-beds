@@ -78,9 +78,10 @@ def search_location(apikey, location, subset = None):
                 'updated': craigsdate('updated: ', html),
                 'weekly': weekly(html),
 
-                # Special for certain times of year
-                'super_bowl': 'superbowl' in text.lower().replace(' ', ''),
             }
+            # Special for certain times of year
+            for thing in ['superbowl', 'sxsw']:
+                data[thing] = thing in text.lower().replace(' ', '')
             s.save_dict('results', data)
             s.connection.commit()
 
