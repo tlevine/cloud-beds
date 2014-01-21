@@ -95,7 +95,7 @@ levels = {
     'zipcode',
 }
 class search3Taps:
-    def __init__(self, apikey, location, rpp = 100, only_first_tier = False, min_price = 200, max_price = 1500):
+    def __init__(self, apikey, location, rpp = 100, only_first_tier = False):
         self.only_first_tier = only_first_tier
         level, value = location
         if level not in levels:
@@ -103,13 +103,10 @@ class search3Taps:
         args = {
             'apikey':apikey,
             'rpp':rpp,
-            'min_price':min_price,
-            'max_price':max_price,
             'level': level,
             'value': value,
-            'body':'~bnb.com',
         }
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&retvals=external_url&rpp=%(rpp)d&price=%(min_price)s..%(max_price)d&body=%(body)s" % args
+        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&rpp=%(rpp)d" % args
         self.date = datetime.date.today()
         print(self.apiUrl)
 
@@ -153,6 +150,7 @@ class search3Taps:
             data = json.loads(text)
 
             if 'postings' not in data:
+                print(data)
                 raise StopIteration
 
             self.buffer = [p['external_url'] for p in data['postings']]
