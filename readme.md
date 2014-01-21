@@ -97,3 +97,25 @@ Extract these features
 * Is it available because a new person is moving in but not for a couple weeks?
 * Datetime posted
 * Datetime updated
+
+
+## How to
+Clear the cache.
+
+    make clean
+
+Run everything.
+
+    make
+
+Browse results.
+
+    sqlite3 craigslist.sqlite
+
+Move things to `/tmp` it doesn't thrash the hard drive.
+
+    make tmp
+
+Move things back from `/tmp` so they persist.
+
+    make disk
