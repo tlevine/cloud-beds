@@ -41,8 +41,6 @@ def search_location(apikey, location):
     s = search3Taps(apikey, location)
     finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
     for listing in s:
-        print(listing)
-        break
         page = listing['external_url']
         if page not in finished_pages:
             html = lxml.html.fromstring(loadCraigslist(page))
@@ -51,12 +49,31 @@ def search_location(apikey, location):
             else:
                 start = end = None
             text = html.text_content()
-            s.cursor.execute('''
-                INSERT OR REPLACE INTO results
-                  (url, price, start, end, furnished, posted, updated, weekly)
-                VALUES (?,?,?,?,?,?,?, ?)''',
-                (page,price(text), start, end, furnished(text), craigsdate('Posted: ', html), craigsdate('Updated: ', html), weekly(html)))
+            data = {
+                'url': listing['external_url'],
+
+                # From 3taps
+                'heading': listing['heading'],
+                'long': listing['location']['long'],
+                'lat': listing['location']['lat'],
+                'zipcode': listing['location']['zipcode'],
+                'address': listing['location'].get('formatted_address', ''),
+
+                # From my parse
+                'price': listing.get('price', price(text)),
+                'start': start,
+                'end': end,
+                'furnished': furnished(text),
+                'posted': craigsdate('Posted: ', html),
+                'updated': craigsdate('Updated: ', html),
+                'weekly': weekly(html),
+
+                # Special for certain times of year
+                'super_bowl': 'superbowl' in text.lower().replace(' ', ''),
+            }
+            s.save_dict('results', data)
             s.connection.commit()
+
 
 def randomsleep(mean = 1, sd = 0.5):
     "Sleep for a random amount of time"
@@ -108,13 +125,47 @@ class search3Taps:
             'rpp':rpp,
             'level': level,
             'value': value,
+            'retvals': ','.join([
+                'id',
+                'account_id',
+                'source',
+                'category',
+                'category_group',
+                'location',
+                'external_id',
+                'external_url',
+                'heading',
+                'body',
+                'timestamp',
+                'expires',
+                'language',
+                'price',
+                'currency',
+                'images',
+                'annotations',
+                'status',
+#               'state',
+                'immortal',
+                'deleted',
+#               'flagged_status',
+            ]),
         }
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&rpp=%(rpp)d" % args
+        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&rpp=%(rpp)d&retvals=%(retvals)s" % args
         self.date = datetime.date.today()
         print(self.apiUrl)
 
         self.connection = sqlite3.connect('craigslist.sqlite')
         self.cursor = self.connection.cursor()
+
+    def save_dict(self, table, data):
+        args = {
+            'table': table,
+            'columns': '[' + '],['.join(data.keys()) + ']',
+            'question_marks': ','.join('?' * len(data)),
+        }
+        sql = 'INSERT OR REPLACE INTO [%(table)s] (%(columns)s) VALUES (%(question_marks)s)' % args
+        self.cursor.execute(sql, list(data.values()))
+        self.connection.commit()
 
     def _is_in_cache(self):
         count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;',

@@ -16,5 +16,13 @@ CREATE TABLE IF NOT EXISTS results (
   posted INTEGER,
   updated INTEGER,
   weekly INTEGER NOT NULL,
+
+  heading TEXT NOT NULL,
+  long REAL NOT NULL,
+  lat REAL NOT NULL,
+  zipcode TEXT NOT NULL,
+  address TEXT NOT NULL,
+
+  super_bowl INTEGER NOT NULL,
   UNIQUE(url)
 );

@@ -42,7 +42,7 @@ def is_date_range(html):
             else:
                 for i in range(1, len(window)):
                     if _is_end_date(window[0], window[1:i]):
-                        print(window[0], window[1:i])
+#                       print(window[0], window[1:i])
                         return True
     return False
 

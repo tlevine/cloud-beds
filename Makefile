@@ -8,3 +8,6 @@ fixtures:
 
 schema:
 	sqlite3 craigslist.sqlite < schema.sql
+
+clean:
+	sqlite3 craigslist.sqlite 'DROP TABLE results;'
