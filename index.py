@@ -74,8 +74,8 @@ def search_location(apikey, location, subset = None):
                 'start': start,
                 'end': end,
                 'furnished': furnished(text),
-                'posted': craigsdate('Posted: ', html),
-                'updated': craigsdate('Updated: ', html),
+                'posted': craigsdate('posted: ', html),
+                'updated': craigsdate('updated: ', html),
                 'weekly': weekly(html),
 
                 # Special for certain times of year
