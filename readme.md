@@ -86,8 +86,13 @@ select * from results where (start not null or end not null) and url like '%aust
 ```sql
 select * from results where (start not null or end not null) and url like '%austin%' and url not glob '*/sbw/*' order by end-start;
 ```
+
 ```sql
 select price, url, heading from results where (not super_bowl) and furnished and url like '%newyork%' and end = 2 and updated not null and posted not null order by (updated - posted)/(strftime('%s','now') - posted);
+```
+
+```sql
+select price, url, heading from results where (not super_bowl) and furnished and url like '%newyork%' and end = 2 and updated not null and posted not null and price <= 1300 and (strftime('%s', 'now') - updated) < (1 * 24 * 3600) order by (updated - posted)/(strftime('%s','now') - posted);
 ```
 
 ## To do
