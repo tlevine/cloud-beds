@@ -35,7 +35,7 @@ except ImportError:
 def main():
     regionthreads = 3
     for location in locations:
-        for i in range(regionthreads)
+        for i in range(regionthreads):
             subset = (i, regionthreads)
             t = threading.Thread(target = search_location, args = (apikey, location, subset))
             t.start()
