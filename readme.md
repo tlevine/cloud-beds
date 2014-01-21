@@ -118,4 +118,4 @@ Move things to `/tmp` it doesn't thrash the hard drive.
 
 Move things back from `/tmp` so they persist.
 
-    make disk
+    make save
