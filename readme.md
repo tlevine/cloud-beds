@@ -127,3 +127,6 @@ Move things to `/tmp` it doesn't thrash the hard drive.
 Move things back from `/tmp` so they persist.
 
     make save
+
+## Thoughts
+It looks like short-term things get posted last-minute.
