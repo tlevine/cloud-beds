@@ -40,7 +40,10 @@ def main():
 def search_location(apikey, location):
     s = search3Taps(apikey, location)
     finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
-    for page in s:
+    for listing in s:
+        print(listing)
+        break
+        page = listing['external_url']
         if page not in finished_pages:
             html = lxml.html.fromstring(loadCraigslist(page))
             if is_date_range(html):
@@ -153,7 +156,7 @@ class search3Taps:
                 print(data)
                 raise StopIteration
 
-            self.buffer = [p['external_url'] for p in data['postings']]
+            self.buffer = [p for p in data['postings']]
             self.page = data['next_page']
             self.tier = data['next_tier']
             print('The search returned %d results.' % data['num_matches'])
