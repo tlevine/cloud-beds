@@ -15,5 +15,6 @@ CREATE TABLE IF NOT EXISTS results (
   furnished INTEGER NOT NULL,
   posted INTEGER,
   updated INTEGER,
+  weekly INTEGER NOT NULL,
   UNIQUE(url)
 );

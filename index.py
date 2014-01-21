@@ -50,9 +50,9 @@ def search_location(apikey, location):
             text = html.text_content()
             s.cursor.execute('''
                 INSERT OR REPLACE INTO results
-                  (url, price, start, end, furnished, posted, updated)
-                VALUES (?,?,?,?,?,?,?)''',
-                (page,price(text), start, end, furnished(text), craigsdate('Posted: ', html), craigsdate('Updated: ', html)))
+                  (url, price, start, end, furnished, posted, updated, weekly)
+                VALUES (?,?,?,?,?,?,?, ?)''',
+                (page,price(text), start, end, furnished(text), craigsdate('Posted: ', html), craigsdate('Updated: ', html), weekly(html)))
             s.connection.commit()
 
 def randomsleep(mean = 1, sd = 0.5):
@@ -185,6 +185,9 @@ def craigsdate(text, html):
     if ds != []:
         e = dateutil.parser.parse(ds[0])
         return int(datetime.datetime.astimezone(e).timestamp())
+
+def weekly(html):
+    return 'week' in html.text_content()
 
 if __name__ == '__main__':
     main()
