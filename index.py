@@ -33,15 +33,25 @@ except ImportError:
     proxies = None
 
 def main():
+    regionthreads = 3
     for location in locations:
-       t = threading.Thread(target = search_location, args = (apikey, location))
-       t.start()
+        for i in range(regionthreads)
+            subset = (i, regionthreads)
+            t = threading.Thread(target = search_location, args = (apikey, location, subset))
+            t.start()
 
-def search_location(apikey, location):
+def search_location(apikey, location, subset = None):
     s = search3Taps(apikey, location)
     finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
     for listing in s:
         page = listing['external_url']
+
+        # Run on a systematic sample of listings by id.
+        if subset != None:
+            a, b = subset
+            if listing['id'] % b != a:
+                continue
+
         if page not in finished_pages:
             html = lxml.html.fromstring(loadCraigslist(page))
             if is_date_range(html):
