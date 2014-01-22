@@ -209,7 +209,12 @@ class search3Taps:
                 ("url","date","tier","page","result")
                 VALUES (?,?,?,?,?)
                 '''
-                self.cursor.execute(sql, (self.apiUrl, self.date.isoformat(), self.tier, self.page, text))
+                args = (self.apiUrl, self.date.isoformat(), self.tier, self.page, text)
+                try:
+                    self.cursor.execute(sql, args)
+                except:
+                    print(args)
+                    raise
                 self.connection.commit()
 
             data = json.loads(text)
