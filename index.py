@@ -33,24 +33,15 @@ except ImportError:
     proxies = None
 
 def main():
-    regionthreads = 3
     for location in locations:
-        for i in range(regionthreads):
-            subset = (i, regionthreads)
-            t = threading.Thread(target = search_location, args = (apikey, location, subset))
-            t.start()
+        t = threading.Thread(target = search_location, args = (apikey, location))
+        t.start()
 
-def search_location(apikey, location, subset = None):
+def search_location(apikey, location):
     s = search3Taps(apikey, location)
     finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
     for listing in s:
         page = listing['external_url']
-
-        # Run on a systematic sample of listings by id.
-        if subset != None:
-            a, b = subset
-            if listing['id'] % b != a:
-                continue
 
         if page not in finished_pages:
             html = lxml.html.fromstring(loadCraigslist(page))
@@ -84,13 +75,6 @@ def search_location(apikey, location, subset = None):
                 data[thing] = thing in text.lower().replace(' ', '')
             s.save_dict('results', data)
             s.connection.commit()
-
-
-def randomsleep(mean = 1, sd = 0.5):
-    "Sleep for a random amount of time"
-    seconds=normalvariate(mean, sd)
-    if seconds>0:
-        sleep(seconds)
 
 def loadCraigslist(craigslistUrl):
     httpCraigslistUrl = 'http://' + craigslistUrl.replace(r'^https?://','')
