@@ -220,7 +220,7 @@ class search3Taps:
             data = json.loads(text)
 
             if 'postings' not in data:
-                warnings.warn(data)
+                warnings.warn(json.dumps(data))
                 raise StopIteration
 
             self.buffer = [p for p in data['postings']]
