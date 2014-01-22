@@ -95,7 +95,6 @@ def loadCraigslist(craigslistUrl):
 
         response = requests.get(requestUrl, headers = headers, proxies = proxies, auth = auth)
         open(fileName, 'w').write(response.text)
-        randomsleep()
     return open(fileName).read()
 
 # http://docs.3taps.com/reference_api.html
