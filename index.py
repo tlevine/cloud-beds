@@ -163,7 +163,7 @@ class search3Taps:
         }
         self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&rpp=%(rpp)d&retvals=%(retvals)s" % args
         self.date = datetime.date.today()
-        print(self.apiUrl)
+#       print(self.apiUrl)
 
         self.connection = sqlite3.connect('craigslist.sqlite')
         self.cursor = self.connection.cursor()
@@ -220,7 +220,7 @@ class search3Taps:
             data = json.loads(text)
 
             if 'postings' not in data:
-                print(data)
+                warnings.warn(data)
                 raise StopIteration
 
             self.buffer = [p for p in data['postings']]
