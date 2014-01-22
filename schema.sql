@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS results (
   zipcode TEXT NOT NULL,
   address TEXT NOT NULL,
 
-  super_bowl INTEGER NOT NULL,
+  superbowl INTEGER NOT NULL,
   sxsw INTEGER NOT NULL,
   UNIQUE(url)
 );

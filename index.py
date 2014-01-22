@@ -181,7 +181,7 @@ class search3Taps:
     def _is_in_cache(self):
         count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;',
             (self.apiUrl, self.date.isoformat(), self.tier, self.page)).fetchall()[0][0]
-        return count == 1
+        return count >= 1
 
     def _load_from_cache(self):
         return self.cursor.execute('SELECT result FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;', (self.apiUrl, self.date.isoformat(), self.tier, self.page)).fetchall()[0][0]
