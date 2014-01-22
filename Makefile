@@ -17,7 +17,9 @@ clean:
 	test -f craigslist.sqlite && \
 	( ! test -h craigslist.sqlite ) && \
 	cp craigslist.sqlite /tmp/craigslist.sqlite && \
-	mv craigslist.sqlite craigslist.sqlite.$(date) && \
+	gzip /tmp/craigslist.sqlite && \
+	mv /tmp/craigslist.sqlite.gz craigslist.sqlite.$(date).gz && \
+	mv craigslist.sqlite /tmp && \
 	ln -s /tmp/craigslist.sqlite .
 
 /tmp/craigslist:
