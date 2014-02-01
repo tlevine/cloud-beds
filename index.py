@@ -14,7 +14,7 @@ import dateutil
 import sqlite3
 
 import requests
-import parsedatetime.parsedatetime as pdt
+import parsedatetime as pdt
 cal = pdt.Calendar()
 import lxml.html
 import threading
