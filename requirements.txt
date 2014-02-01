@@ -1,2 +1,2 @@
 requests>=2.0.1
-parsedatetime
+parsedatetime>=1.1.2
