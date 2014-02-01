@@ -40,14 +40,20 @@ def main():
         t = threading.Thread(target = search_location, args = (apikey, location))
         t.start()
 
-def search_location(apikey, location):
+def search_location(apikey, location, parse = False):
     s = search3Taps(apikey, location)
     finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
     for listing in s:
         page = listing['external_url']
 
         if page not in finished_pages:
-            html = lxml.html.fromstring(loadCraigslist(page))
+
+            if not parse:
+                # Just download the page
+                loadCraigslist(page)
+                continue
+
+            html = lxml.html.fromstring(loadCraigslist(page).read())
             if is_date_range(html):
                 start, end = tuple(map(month, dates(html)))
             else:
@@ -98,7 +104,7 @@ def loadCraigslist(craigslistUrl):
 
         response = requests.get(requestUrl, headers = headers, proxies = proxies, auth = auth)
         open(fileName, 'w').write(response.text)
-    return open(fileName).read()
+    return open(fileName)
 
 # http://docs.3taps.com/reference_api.html
 levels = {
