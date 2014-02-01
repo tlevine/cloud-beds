@@ -4,15 +4,15 @@ import os
 import re
 import itertools
 import datetime
+import csv
 
 import lxml.html
-import pandas
 
 def main():
-    df = pandas.read_csv(os.path.join('fixtures','fixtures.csv')).head()
-    df.index = df['url'].map(lambda url: int(url.split('/')[-1].split('.')[0]))
-    df['filename'] = df['url'].map(lambda url: os.path.join('fixtures',url.split('/')[-1]))
-    df['html'] = df['filename'].map(lambda x: lxml.html.parse(x).getroot())
+    for row in csv.DictReader(os.path.join('fixtures','fixtures.csv')):
+        index = row['url'].split('/')[-1].split('.')[0]
+        filename = os.path.join('fixtures',row['url'].split('/')[-1])
+        html = lxml.html.parse(filename).getroot()
 
 def is_date_range(html):
     postingbodies = html.xpath('id("postingbody")')
