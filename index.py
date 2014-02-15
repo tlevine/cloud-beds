@@ -2,6 +2,7 @@
 import datetime
 import warnings
 import os
+import sys
 from urllib.parse import urlparse
 import re
 import json
@@ -9,7 +10,6 @@ import itertools
 from time import sleep
 from random import normalvariate
 from is_date_range import is_date_range, dates, month
-import dateutil.parser
 import logging
 
 import sqlite3
@@ -28,7 +28,7 @@ try:
     from config import apikey, locations
 except ImportError:
     logger.critical('You must specify the "apikey" and "locations" in config.py.')
-    exit(1)
+    sys.exit(1)
 
 try:
     from config import http_proxy, http_proxy_username, http_proxy_username, http_proxy_password
@@ -120,7 +120,7 @@ class Search:
         if not self.html:
             return 'https://%s/sub/index000.html' % self.subdomain
 
-        nexts = set(self.html.xpath('//a[contains(text(),"next >")]/@href')))
+        nexts = set(self.html.xpath('//a[contains(text(),"next >")]/@href'))
         if len(nexts) != 1:
             raise ValueError('No next page for %s' % self.search_url)
         return str(list(nexts)[0])
@@ -143,12 +143,6 @@ def _ints(monies):
             yield int(money)
         except ValueError:
             pass
-
-def craigsdate(text, html):
-    ds = html.xpath('//p[text()="%s"]/time/@datetime' % text)
-    if ds != []:
-        e = dateutil.parser.parse(ds[0])
-        return int(datetime.datetime.astimezone(e).timestamp())
 
 def weekly(html):
     return 'week' in html.text_content()
