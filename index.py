@@ -85,27 +85,6 @@ def search_location(apikey, location, parse = False):
             s.save_dict('results', data)
             s.connection.commit()
 
-def loadCraigslist(craigslistUrl):
-    httpCraigslistUrl = 'http://' + craigslistUrl.replace(r'^https?://','')
-    parsedUrl = urlparse(craigslistUrl)
-    requestUrl = 'http://' + re.sub(r'http://', '', httpCraigslistUrl)
-    fileName = 'craigslist/' + parsedUrl.hostname.replace(r'\..*$', '') + parsedUrl.path;
-
-    if not os.path.exists(fileName):
-        logger.debug('Downloading to ./%s' % fileName)
-        try:
-            os.makedirs(re.sub(r'\/[^\/]*$', '', fileName))
-        except OSError:
-            pass
-
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:18.0) Gecko/20100101 Firefox/18.0"
-        }
-
-        response = requests.get(requestUrl, headers = headers, proxies = proxies, auth = auth)
-        open(fileName, 'w').write(response.text)
-    return open(fileName)
-
 # http://docs.3taps.com/reference_api.html
 levels = {
     'country',
