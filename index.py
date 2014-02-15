@@ -22,6 +22,8 @@ import threading
 
 logger = logging.getLogger('undervalued-sublets')
 
+from cache import get
+
 try:
     from config import apikey, locations
 except ImportError:
@@ -100,21 +102,30 @@ class Search:
     def __init__(self, subdomain):
         self.subdomain = subdomain
         self.buffer = []
+        self.search_url = 'https://%s/sub/index000.html' % subdomain
 
     def __next__(self):
+        if len(self.buffer) > 0:
+            return self.buffer.pop(0)
+
+
         if self.html.xpath('count(//p[@class="row"])') == 0:
             raise StopIteration
 
-        self.buffer.extend(
-        self.page = data['next_page']
-        self.tier = data['next_tier']
-        logging.debug('The search returned %d results.' % data['num_matches'])
+    def download(self):
+        fp = get(self.search_url)
+        html = lxml.html.fromstring(fp.read())
+        html.make_links_absolute(self.search_url)
 
-        if self.buffer == []:
-            return self.__next__()
-        else:
-            return self.buffer.pop(0)
+        nexts = set(self.html.xpath('//a[contains(text(),"next >")]/@href')))
+        if len(nexts) != 1:
+            raise ValueError('No next page for %s' % self.search_url)
 
+        # Add listings
+        self.buffer.extend(map(str,html.xpath('//p[@class="row"]/a/@href')))
+
+        # Bump search url
+        self.search_url = str(list(nexts)[0])
 
 def price(text):
     'Find the price of a listing. Use the highest dollar value in the listing.'
