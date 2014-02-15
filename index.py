@@ -37,8 +37,7 @@ def main():
         t.start()
 
 def search_subdomain(subdomain):
-    s = Search(subdomain)
-    for url in s:
+    for url in Search(subdomain):
         get(url)
         break
 
