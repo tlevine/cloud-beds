@@ -26,8 +26,8 @@ def _download(url, date = datetime.date.today()):
         os.makedirs(directory)
 
     r = requests.get(url, headers = HEADERS)
-    with open(filename, 'xb') as f:
-        f.write(r.content)
+    with open(filename, 'x') as f:
+        f.write(r.text)
 
 def _url_to_directory(url):
     p = urllib.parse.urlparse(url)

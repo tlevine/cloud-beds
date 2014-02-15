@@ -88,16 +88,16 @@ class Search:
         self.html = None
         self.present_search_url = None
 
-    def __next__(self):
-        if len(self.buffer) > 0:
-            return self.buffer.pop(0)
+    def next(self):
+        if self.buffer == []:
+            self.download()
+            self.buffer.extend(map(str,self.html.xpath('//p[@class="row"]/a/@href')))
 
-        html = self.download()
-        self.buffer.extend(map(str,html.xpath('//p[@class="row"]/a/@href')))
-
-        if html.xpath('count(//p[@class="row"])') == 0:
+        if self.html.xpath('count(//p[@class="row"])') == 0:
             logger.debug('Stopped at %s' % self.present_search_url)
             raise StopIteration
+        else:
+            return self.buffer.pop(0)
 
     def download(self):
         self.present_search_url = self.next_search_url()
@@ -107,12 +107,10 @@ class Search:
         html.make_links_absolute(self.present_search_url)
         self.html = html
 
-        return html
-
     def next_search_url(self):
         'Determine the url of the next search page.'
         if not self.html:
-            return 'https://%s/sub/index000.html' % self.subdomain
+            return 'https://%s.craigslist.org/sub/index000.html' % self.subdomain
 
         nexts = set(self.html.xpath('//a[contains(text(),"next >")]/@href'))
         if len(nexts) != 1:
