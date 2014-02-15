@@ -102,30 +102,40 @@ class Search:
     def __init__(self, subdomain):
         self.subdomain = subdomain
         self.buffer = []
-        self.search_url = 'https://%s/sub/index000.html' % subdomain
+        self.html = None
+        self.present_search_url = None
 
     def __next__(self):
         if len(self.buffer) > 0:
             return self.buffer.pop(0)
 
+        html = self.download()
+        self.buffer.extend(map(str,html.xpath('//p[@class="row"]/a/@href')))
 
-        if self.html.xpath('count(//p[@class="row"])') == 0:
+        if html.xpath('count(//p[@class="row"])') == 0:
+            logger.debug('Stopped at %s' % self.present_search_url)
             raise StopIteration
 
     def download(self):
-        fp = get(self.search_url)
+        self.present_search_url = self.next_search_url()
+        fp = get(self.present_search_url)
+
         html = lxml.html.fromstring(fp.read())
-        html.make_links_absolute(self.search_url)
+        html.make_links_absolute(self.present_search_url)
+        self.html = html
+
+        return html
+
+    def next_search_url(self):
+        'Determine the url of the next search page.'
+        if not self.html:
+            return 'https://%s/sub/index000.html' % self.subdomain
 
         nexts = set(self.html.xpath('//a[contains(text(),"next >")]/@href')))
         if len(nexts) != 1:
             raise ValueError('No next page for %s' % self.search_url)
+        return str(list(nexts)[0])
 
-        # Add listings
-        self.buffer.extend(map(str,html.xpath('//p[@class="row"]/a/@href')))
-
-        # Bump search url
-        self.search_url = str(list(nexts)[0])
 
 def price(text):
     'Find the price of a listing. Use the highest dollar value in the listing.'
