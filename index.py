@@ -32,63 +32,27 @@ except ImportError:
     proxies = None
 
 def main():
-    for location in locations:
-        t = threading.Thread(target = search_location, args = (apikey, location))
+    for subdomain in ['austin']:
+        t = threading.Thread(target = search_subdomain, args = (subdomain,))
         t.start()
 
-def search_location(apikey, location, parse = False):
-    s = search3Taps(apikey, location)
-    finished_pages = set(row[0] for row in s.cursor.execute('SELECT url from results').fetchall())
-    for listing in s:
-        page = listing['external_url']
-
-        if page not in finished_pages:
-
-            if not parse:
-                # Just download the page
-                loadCraigslist(page)
-                continue
-
-            html = lxml.html.fromstring(loadCraigslist(page).read())
-            if is_date_range(html):
-                start, end = tuple(map(month, dates(html)))
-            else:
-                start = end = None
-            text = html.text_content()
-            data = {
-                'url': listing['external_url'],
-
-                # From 3taps
-                'heading': listing['heading'],
-                'long': listing['location']['long'],
-                'lat': listing['location']['lat'],
-                'zipcode': listing['location']['zipcode'],
-                'address': listing['location'].get('formatted_address', ''),
-
-                # From my parse
-                'price': listing.get('price', price(text)),
-                'start': start,
-                'end': end,
-                'furnished': furnished(text),
-                'posted': craigsdate('posted: ', html),
-                'updated': craigsdate('updated: ', html),
-                'weekly': weekly(html),
-
-            }
-            # Special for certain times of year
-            for thing in ['superbowl', 'sxsw']:
-                data[thing] = thing in text.lower().replace(' ', '')
-            s.save_dict('results', data)
-            s.connection.commit()
+def search_subdomain(subdomain):
+    s = Search(subdomain)
+    for url in s:
+        get(url)
+        break
 
 class Search:
     def __init__(self, subdomain):
         self.subdomain = subdomain
+
+    def __iter__(self):
         self.buffer = []
         self.html = None
         self.present_search_url = None
+        return self
 
-    def next(self):
+    def __next__(self):
         if self.buffer == []:
             self.download()
             self.buffer.extend(map(str,self.html.xpath('//p[@class="row"]/a/@href')))
