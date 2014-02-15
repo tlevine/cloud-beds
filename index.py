@@ -96,110 +96,16 @@ levels = {
     'locality',
     'zipcode',
 }
-class search3Taps:
-    def __init__(self, apikey, location, rpp = 100, only_first_tier = False):
-        self.only_first_tier = only_first_tier
-        level, value = location
-        if level not in levels:
-            raise ValueError('"level" must be one of %s.' % ', '.join(levels))
-        args = {
-            'apikey':apikey,
-            'rpp':rpp,
-            'level': level,
-            'value': value,
-            'retvals': ','.join([
-                'id',
-                'account_id',
-                'source',
-                'category',
-                'category_group',
-                'location',
-                'external_id',
-                'external_url',
-                'heading',
-                'body',
-                'timestamp',
-                'expires',
-                'language',
-                'price',
-                'currency',
-                'images',
-                'annotations',
-                'status',
-#               'state',
-                'immortal',
-                'deleted',
-#               'flagged_status',
-            ]),
-        }
-        self.apiUrl = "http://search.3taps.com?auth_token=%(apikey)s&SOURCE=CRAIG&location.%(level)s=%(value)s&category=RSUB&rpp=%(rpp)d&retvals=%(retvals)s" % args
-        self.date = datetime.date.today()
-        logger.debug('Querying the API at this base url: ' + self.apiUrl)
-
-        self.connection = sqlite3.connect('craigslist.sqlite')
-        self.cursor = self.connection.cursor()
-
-    def save_dict(self, table, data):
-        args = {
-            'table': table,
-            'columns': '[' + '],['.join(data.keys()) + ']',
-            'question_marks': ','.join('?' * len(data)),
-        }
-        sql = 'INSERT OR REPLACE INTO [%(table)s] (%(columns)s) VALUES (%(question_marks)s)' % args
-        self.cursor.execute(sql, list(data.values()))
-        self.connection.commit()
-
-    def _is_in_cache(self):
-        count = self.cursor.execute('SELECT count(*) c FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;',
-            (self.apiUrl, self.date.isoformat(), self.tier, self.page)).fetchall()[0][0]
-        return count >= 1
-
-    def _load_from_cache(self):
-        return self.cursor.execute('SELECT result FROM searches WHERE URL = ? AND date = ? AND tier = ? AND page = ?;', (self.apiUrl, self.date.isoformat(), self.tier, self.page)).fetchall()[0][0]
-
-    def __iter__(self):
+class Search:
+    def __init__(self, subdomain):
+        self.subdomain = subdomain
         self.buffer = []
-        self.page = 0
-        self.tier = 0
-        return self
-
-    def _download_next_page(self):
-        if self._is_in_cache():
-            logger.debug('Loading from cache tier %d, page %d' % (self.tier, self.page))
-            text = self._load_from_cache()
-        else:
-            logger.debug('Downloading tier %d, page %d' % (self.tier, self.page))
-            response = requests.get(self.apiUrl, params = {'tier':self.tier,'page':self.page}, proxies = proxies, auth = auth)
-            text = response.text
-            sql = '''
-            INSERT INTO searches
-            ("url","date","tier","page","result")
-            VALUES (?,?,?,?,?)
-            '''
-            args = (self.apiUrl, self.date.isoformat(), self.tier, self.page, text)
-            try:
-                self.cursor.execute(sql, args)
-            except:
-                logging.debug('Error inserting these values into the database: ' + str(args))
-                raise
-            self.connection.commit()
-
-        return json.loads(text)
 
     def __next__(self):
-        if len(self.buffer) > 0:
-            return self.buffer.pop(0)
-
-        if self.tier == -1:
+        if self.html.xpath('count(//p[@class="row"])') == 0:
             raise StopIteration
 
-        data = self._download_next_page()
-
-        if 'postings' not in data:
-            warnings.warn(json.dumps(data))
-            raise StopIteration
-
-        self.buffer = [p for p in data['postings']]
+        self.buffer.extend(
         self.page = data['next_page']
         self.tier = data['next_tier']
         logging.debug('The search returned %d results.' % data['num_matches'])
