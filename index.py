@@ -87,17 +87,6 @@ def search_location(apikey, location, parse = False):
             s.save_dict('results', data)
             s.connection.commit()
 
-# http://docs.3taps.com/reference_api.html
-levels = {
-    'country',
-    'state',
-    'metro',
-    'region',
-    'county',
-    'city',
-    'locality',
-    'zipcode',
-}
 class Search:
     def __init__(self, subdomain):
         self.subdomain = subdomain
