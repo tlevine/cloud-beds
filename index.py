@@ -25,12 +25,6 @@ logger = logging.getLogger('undervalued-sublets')
 from cache import get
 
 try:
-    from config import apikey, locations
-except ImportError:
-    logger.critical('You must specify the "apikey" and "locations" in config.py.')
-    sys.exit(1)
-
-try:
     from config import http_proxy, http_proxy_username, http_proxy_username, http_proxy_password
     proxies = {'http':'http://' + http_proxy}
     auth = requests.auth.HTTPProxyAuth(http_proxy_username, http_proxy_password)
@@ -147,5 +141,5 @@ def _ints(monies):
 def weekly(html):
     return 'week' in html.text_content()
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
