@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import threading
 
 from craigsgenerator import Section, fulltext
@@ -15,7 +16,7 @@ except ImportError:
 def Sink():
     while True:
         listing = yield
-        print(listing)
+        # print(type(listing))
 
 def main():
     sink = Sink()
@@ -26,8 +27,12 @@ def main():
 
 def search_subdomain(subdomain, sink):
     for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
-        listing['listing'] = fulltext(listing)
-        sink.send(listing)
+        if os.path.getsize(listing['listing'].name) == 0:
+            os.remove(listing['listing'].name)
+            # Skip it; it'll get caught next time.
+        else:
+            listing['listing'] = fulltext(listing)
+            sink.send(listing)
 
 if __name__ == '__main__':
     main()
