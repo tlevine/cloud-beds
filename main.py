@@ -16,16 +16,16 @@ def Sink():
     while True:
         listing = yield
         print(listing)
-sink = Sink()
-sink.send(None)
 
 def main():
+    sink = Sink()
+    sink.send(None)
     for subdomain in ['austin']:
-        t = threading.Thread(target = search_subdomain, args = (subdomain,))
+        t = threading.Thread(target = search_subdomain, args = (subdomain, sink))
         t.start()
 
-def search_subdomain(subdomain):
-    for listing in Section(subdomain, 'sub'):
+def search_subdomain(subdomain, sink):
+    for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
         listing['listing'] = fulltext(listing)
         sink.send(listing)
         break
