@@ -48,9 +48,8 @@ def count(queue):
             print('Written %d records' % i, end = '\r')
 
 def log(queue):
-    while True:
-        queue.get()
-        print(queue['href'])
+    for i in itertools.count(1):
+        print('% 10d: %s' % (i,queue.get()['href']))
 
 def download(queuefunc):
     queue = Queue()
