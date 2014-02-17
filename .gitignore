@@ -1,9 +1,2 @@
-craigslist.sqlite
-craigslist.sqlite-journal
-craigslist
-
-craigslist.sqlite.2*
-craigslist.2*
-
 config.py
-*.tar.gz
+cache
