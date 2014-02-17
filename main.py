@@ -48,7 +48,6 @@ def search_section(subdomain, sectionslug, queue):
         except KeyError:
             body = ''
         listing['body'] = body
-        print(';', end = '')
 
         listing['subdomain'] = subdomain
         listing['section'] = sectionslug
