@@ -2,6 +2,7 @@
 import threading
 
 from craigsgenerator import Section, fulltext
+
 from dates import is_date_range, dates, month
 
 try:
@@ -10,6 +11,14 @@ try:
 except ImportError:
     proxies = None
 
+
+def Sink():
+    while True:
+        listing = yield
+        print(listing)
+sink = Sink()
+sink.send(None)
+
 def main():
     for subdomain in ['austin']:
         t = threading.Thread(target = search_subdomain, args = (subdomain,))
@@ -17,7 +26,8 @@ def main():
 
 def search_subdomain(subdomain):
     for listing in Section(subdomain, 'sub'):
-        print(listing)
+        listing['listing'] = fulltext(listing)
+        sink.send(listing)
         break
 
 if __name__ == '__main__':
