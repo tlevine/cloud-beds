@@ -51,7 +51,7 @@ def search_section(subdomain, sectionslug, queue):
         print(';', end = '')
 
         listing['subdomain'] = subdomain
-        listing['section'] = section
+        listing['section'] = sectionslug
         listing['url'] = listing['href']
 
         del(listing['href'])
