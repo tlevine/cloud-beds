@@ -20,6 +20,17 @@ Thus, I am able to make full use of these
 short-term sublets of externally imposed duration. So I'm going
 to search Craigslist for these sublets and then sublet them.
 
+## How to
+Set proxyies if you please, either with environment variables
+
+    export http_proxy=tlevine:hohraoeuaoeu@example.com:8080
+
+or in `config.py`. (See the [example](config.py.example).)
+
+Then run like so.
+
+    ./main.py
+
 ## To do
 Maybe I should distinguish between two sorts of lengths.
 

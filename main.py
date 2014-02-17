@@ -9,7 +9,7 @@ from craigsgenerator import Section, fulltext
 
 from dates import is_date_range, dates, month
 
-proxy_schemes = {'http','https'}
+proxy_schemes = {'http_proxy','https_proxy'}
 if len(proxy_schemes.intersection(os.environ.keys())) > 0:
     proxies = {s:os.environ[s] for s in proxy_schemes if s in os.environ}
 else:
@@ -67,6 +67,4 @@ def search_section(subdomain, sectionslug, queue):
         queue.put(listing)
 
 if __name__ == '__main__':
-    print(proxies)
-    aoeu
     main()
