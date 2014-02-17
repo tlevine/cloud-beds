@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-with open('README.md') as file:
+with open('readme.md') as file:
     long_description = file.read()
 
 setup(name='capitalist-nomad',
@@ -11,8 +11,8 @@ setup(name='capitalist-nomad',
     url='https://github.com/tlevine/undervalued-sublets.git',
     classifiers=[
     ],
-    packages=['craigsgenerator'],
-
+    packages=[],
+    scripts=[],
     install_requires = ['craigsgenerator'],
 
     version='0.0.1',
