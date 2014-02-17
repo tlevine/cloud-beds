@@ -16,7 +16,6 @@ except ImportError:
 def Sink():
     while True:
         listing = yield
-        # print(type(listing))
 
 def main():
     sink = Sink()
