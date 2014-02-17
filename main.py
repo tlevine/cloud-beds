@@ -41,10 +41,16 @@ def save(queue, fn = '/tmp/sublets.csv'):
         if i % 100 == 0:
             print('Written %d records' % i, end = '\r')
 
-def log(queue):
+def count(queue):
     for i in itertools.count(1):
+        queue.get()
         if i % 100 == 0:
             print('Written %d records' % i, end = '\r')
+
+def log(queue):
+    while True:
+        queue.get()
+        print(queue['href'])
 
 def download(queuefunc):
     queue = Queue()
@@ -54,9 +60,9 @@ def download(queuefunc):
             t = threading.Thread(target = download_section, args = (subdomain, sectionslug, queue))
             t.start()
 
-def download_section(subdomain, sectionslug):
+def download_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
-        pass
+        queue.put(listing)
 
 def read_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
@@ -77,4 +83,5 @@ def read_section(subdomain, sectionslug, queue):
 
 if __name__ == '__main__':
     # download(save)
+    # download(count)
     download(log)
