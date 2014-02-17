@@ -20,7 +20,7 @@ def Sink():
 def main():
     sink = Sink()
     sink.send(None)
-    for subdomain in ['austin']:
+    for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc']:
         t = threading.Thread(target = search_subdomain, args = (subdomain, sink))
         t.start()
 
@@ -28,7 +28,6 @@ def search_subdomain(subdomain, sink):
     for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
         listing['listing'] = fulltext(listing)
         sink.send(listing)
-        break
 
 if __name__ == '__main__':
     main()
