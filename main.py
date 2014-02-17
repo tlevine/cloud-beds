@@ -21,7 +21,7 @@ else:
 SUBDOMAINS = ['austin','newyork','sfbay','philadelphia','chicago','washingtondc','portland','seattle','boston']
 SECTIONS = ['roo','sub','hsw','swp','vac','prk','off','rea']
 
-def sink(queue, fn = '/tmp/sublets.csv'):
+def save(queue, fn = '/tmp/sublets.csv'):
     fieldnames = [
         'subdomain','section',
         'title', 'date', 'price',
@@ -41,18 +41,17 @@ def sink(queue, fn = '/tmp/sublets.csv'):
         if i % 100 == 0:
             print('Written %d records' % i, end = '\r')
 
-def main():
-    queue = Queue()
-    threading.Thread(target = sink, args = (queue,)).start()
-    for subdomain in SUBDOMAINS:
-        for sectionslug in SECTIONS:
-            t = threading.Thread(target = read_section, args = (subdomain, sectionslug, queue))
-            t.start()
+def log(queue):
+    for i in itertools.count(1):
+        if i % 100 == 0:
+            print('Written %d records' % i, end = '\r')
 
-def download():
+def download(queuefunc):
+    queue = Queue()
+    threading.Thread(target = queuefunc, args = (queue,)).start()
     for subdomain in SUBDOMAINS:
         for sectionslug in SECTIONS:
-            t = threading.Thread(target = download_section, args = (subdomain, sectionslug))
+            t = threading.Thread(target = download_section, args = (subdomain, sectionslug, queue))
             t.start()
 
 def download_section(subdomain, sectionslug):
@@ -77,5 +76,5 @@ def read_section(subdomain, sectionslug, queue):
         queue.put(listing)
 
 if __name__ == '__main__':
-    download()
-    # main()
+    # download(save)
+    download(log)
