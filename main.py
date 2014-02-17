@@ -30,6 +30,7 @@ def sink(queue, fn = '/tmp/sublets.csv'):
         with open(fn, 'a') as fp:
             w = csv.DictWriter(fp, fieldnames)
             w.writerow(listing)
+        print('.', end = '')
 
 def main():
     queue = Queue()
@@ -41,7 +42,6 @@ def main():
 
 def search_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'http'):
-        print('!', end = '')
         # Make this parallel?
         try:
             body = fulltext(listing)
@@ -56,9 +56,7 @@ def search_section(subdomain, sectionslug, queue):
 
         del(listing['href'])
         del(listing['listing'])
-        print(':', end = '')
         queue.put(listing)
-        print('.', end = '')
 
 if __name__ == '__main__':
     main()
