@@ -17,7 +17,7 @@ except ImportError:
 
 def sink(queue, fn = '/tmp/sublets.csv'):
     fieldnames = [
-        'subdomain',
+        'subdomain','section',
         'title', 'date', 'price',
         'longitude', 'latitude',
         'url', 'body',
@@ -36,26 +36,29 @@ def main():
     threading.Thread(target = sink, args = (queue,)).start()
     for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc','portland','seattle','boston']:
         for sectionslug in ['roo','sub','hsw','swp','vac','prk','off','rea']:
-            t = threading.Thread(target = search_subdomain, args = (subdomain, sectionslug, queue))
+            t = threading.Thread(target = search_section, args = (subdomain, sectionslug, queue))
             t.start()
 
 def search_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'http'):
-        # Make this parallel.
-#       if os.path.getsize(listing['listing'].name) == 0:
-#           os.remove(listing['listing'].name)
-#           # Skip it; it'll get caught next time.
-#           continue
-
+        print('!', end = '')
+        # Make this parallel?
         try:
             body = fulltext(listing)
         except KeyError:
             body = ''
         listing['body'] = body
+        print(';', end = '')
+
+        listing['subdomain'] = subdomain
+        listing['section'] = section
         listing['url'] = listing['href']
+
         del(listing['href'])
         del(listing['listing'])
+        print(':', end = '')
         queue.put(listing)
+        print('.', end = '')
 
 if __name__ == '__main__':
     main()
