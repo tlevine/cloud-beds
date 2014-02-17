@@ -15,19 +15,19 @@ except ImportError:
     proxies = None
 
 
-def sink(queue):
+def sink(queue, fn = '/tmp/sublets.csv'):
     fieldnames = [
         'subdomain',
         'title', 'date', 'price',
         'longitude', 'latitude',
         'url', 'body',
     ]
-    with open('sublets.csv', 'w') as fp:
+    with open(fn, 'w') as fp:
         w = csv.DictWriter(fp, fieldnames)
         w.writeheader()
     while True:
         listing = queue.get()
-        with open('sublets.csv', 'a') as fp:
+        with open(fn, 'a') as fp:
             w = csv.DictWriter(fp, fieldnames)
             w.writerow(listing)
 
