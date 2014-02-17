@@ -40,12 +40,12 @@ def main():
 
 def search_subdomain(subdomain, queue):
     for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
+        # Make this parallel.
 #       if os.path.getsize(listing['listing'].name) == 0:
 #           os.remove(listing['listing'].name)
 #           # Skip it; it'll get caught next time.
 #           continue
 
-        # Make this parallel.
         try:
             body = fulltext(listing)
         except KeyError:
