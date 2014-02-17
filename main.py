@@ -9,12 +9,14 @@ from craigsgenerator import Section, fulltext
 
 from dates import is_date_range, dates, month
 
-try:
-    from config import https_proxy, https_proxy_username, https_proxy_username, https_proxy_password
-    proxy_string = 'https://%s:%s@%s' % (https_proxy_username, https_proxy_password, https_proxy)
-    proxies = {'http': proxy_string, 'https':proxy_string}
-except ImportError:
-    proxies = None
+proxy_schemes = {'http','https'}
+if len(proxy_schemes.intersection(os.environ.keys())) > 0:
+    proxies = {s:os.environ[s] for s in proxy_schemes if s in os.environ}
+else:
+    try:
+        from config import proxies
+    except ImportError:
+        proxies = None
 
 
 def sink(queue, fn = '/tmp/sublets.csv'):
@@ -65,4 +67,6 @@ def search_section(subdomain, sectionslug, queue):
         queue.put(listing)
 
 if __name__ == '__main__':
+    print(proxies)
+    aoeu
     main()

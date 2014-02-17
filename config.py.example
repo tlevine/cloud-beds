@@ -1,3 +1,6 @@
-http_proxy = 'us.proxymesh.com:31280'
-http_proxy_username = 'tlevine'
-http_proxy_password = 'ntsaoeuhaoeuhnsaoeuhtnaoeushnaeu'
+host = 'example.com:8080'
+username = 'tlevine'
+password = 'hohrch2398hu2'
+
+proxy_string = 'https://%s:%s@%s' % (username, password, host)
+proxies = {'http': proxy_string, 'https':proxy_string}
