@@ -34,12 +34,13 @@ def sink(queue, fn = '/tmp/sublets.csv'):
 def main():
     queue = Queue()
     threading.Thread(target = sink, args = (queue,)).start()
-    for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc']:
-        t = threading.Thread(target = search_subdomain, args = (subdomain, queue))
-        t.start()
+    for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc','portland','seattle','boston']:
+        for sectionslug in ['roo','sub','hsw','swp','vac','prk','off','rea']:
+            t = threading.Thread(target = search_subdomain, args = (subdomain, sectionslug, queue))
+            t.start()
 
-def search_subdomain(subdomain, queue):
-    for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
+def search_section(subdomain, sectionslug, queue):
+    for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'http'):
         # Make this parallel.
 #       if os.path.getsize(listing['listing'].name) == 0:
 #           os.remove(listing['listing'].name)
