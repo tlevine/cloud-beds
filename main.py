@@ -41,6 +41,8 @@ def main():
     threading.Thread(target = sink, args = (queue,)).start()
     for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc','portland','seattle','boston']:
         for sectionslug in ['roo','sub','hsw','swp','vac','prk','off','rea']:
+#   for subdomain in ['austin']:
+#       for sectionslug in ['roo']:
             t = threading.Thread(target = search_section, args = (subdomain, sectionslug, queue))
             t.start()
 
