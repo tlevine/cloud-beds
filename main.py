@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import csv
 import threading
 
 from craigsgenerator import Section, fulltext
@@ -14,8 +15,17 @@ except ImportError:
 
 
 def Sink():
+    fieldnames = [
+        'subdomain',
+        'title', 'date', 'price',
+        'longitude', 'latitude',
+        'url', 'body',
+    ]
+    w = csv.DictWriter(open('sublets.csv', 'w'), fieldnames)
+    w.writeheader()
     while True:
         listing = yield
+        w.writerow(listing)
 
 def main():
     sink = Sink()
@@ -26,12 +36,16 @@ def main():
 
 def search_subdomain(subdomain, sink):
     for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
-        if os.path.getsize(listing['listing'].name) == 0:
-            os.remove(listing['listing'].name)
-            # Skip it; it'll get caught next time.
-        else:
-            listing['listing'] = fulltext(listing)
-            sink.send(listing)
+#       if os.path.getsize(listing['listing'].name) == 0:
+#           os.remove(listing['listing'].name)
+#           # Skip it; it'll get caught next time.
+#           continue
+
+        listing['body'] = fulltext(listing)
+        listing['url'] = listing['href']
+        del(listing['href'])
+        del(listing['listing'])
+        sink.send(listing)
 
 if __name__ == '__main__':
     main()
