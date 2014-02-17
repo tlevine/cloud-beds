@@ -6,7 +6,7 @@ from dates import is_date_range, dates, month
 
 try:
     from config import http_proxy, http_proxy_username, http_proxy_username, http_proxy_password
-    proxies = {'http':'http://%s:%s@' % (http_proxy_username, http_proxy_password, http_proxy)}
+    proxies = {'http':'http://%s:%s@%s' % (http_proxy_username, http_proxy_password, http_proxy)}
 except ImportError:
     proxies = None
 
