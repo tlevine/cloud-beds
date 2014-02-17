@@ -41,6 +41,7 @@ def search_subdomain(subdomain, sink):
 #           # Skip it; it'll get caught next time.
 #           continue
 
+        # Make this parallel.
         listing['body'] = fulltext(listing)
         listing['url'] = listing['href']
         del(listing['href'])
