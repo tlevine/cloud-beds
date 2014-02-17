@@ -3,6 +3,7 @@ import os
 import csv
 import threading
 from queue import Queue
+import itertools
 
 from craigsgenerator import Section, fulltext
 
@@ -25,12 +26,15 @@ def sink(queue, fn = '/tmp/sublets.csv'):
     with open(fn, 'w') as fp:
         w = csv.DictWriter(fp, fieldnames)
         w.writeheader()
-    while True:
+
+    for i in itertools.count(1):
         listing = queue.get()
         with open(fn, 'a') as fp:
             w = csv.DictWriter(fp, fieldnames)
             w.writerow(listing)
-        print('.', end = '')
+
+        if i % 100 == 0:
+            print('Written %d records' % i, end = '\r')
 
 def main():
     queue = Queue()
