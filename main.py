@@ -2,6 +2,7 @@
 import os
 import csv
 import threading
+from queue import Queue
 
 from craigsgenerator import Section, fulltext
 
@@ -14,27 +15,30 @@ except ImportError:
     proxies = None
 
 
-def Sink():
+def sink(queue):
     fieldnames = [
         'subdomain',
         'title', 'date', 'price',
         'longitude', 'latitude',
         'url', 'body',
     ]
-    w = csv.DictWriter(open('sublets.csv', 'w'), fieldnames)
-    w.writeheader()
+    with open('sublets.csv', 'w') as fp:
+        w = csv.DictWriter(fp, fieldnames)
+        w.writeheader()
     while True:
-        listing = yield
-        w.writerow(listing)
+        listing = queue.get()
+        with open('sublets.csv', 'a') as fp:
+            w = csv.DictWriter(fp, fieldnames)
+            w.writerow(listing)
 
 def main():
-    sink = Sink()
-    sink.send(None)
+    queue = Queue()
+    threading.Thread(target = sink, args = (queue,)).start()
     for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc']:
-        t = threading.Thread(target = search_subdomain, args = (subdomain, sink))
+        t = threading.Thread(target = search_subdomain, args = (subdomain, queue))
         t.start()
 
-def search_subdomain(subdomain, sink):
+def search_subdomain(subdomain, queue):
     for listing in Section(subdomain, 'sub', proxies = proxies, scheme = 'http'):
 #       if os.path.getsize(listing['listing'].name) == 0:
 #           os.remove(listing['listing'].name)
@@ -42,11 +46,15 @@ def search_subdomain(subdomain, sink):
 #           continue
 
         # Make this parallel.
-        listing['body'] = fulltext(listing)
+        try:
+            body = fulltext(listing)
+        except KeyError:
+            body = ''
+        listing['body'] = body
         listing['url'] = listing['href']
         del(listing['href'])
         del(listing['listing'])
-        sink.send(listing)
+        queue.put(listing)
 
 if __name__ == '__main__':
     main()
