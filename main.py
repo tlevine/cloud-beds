@@ -18,6 +18,8 @@ else:
     except ImportError:
         proxies = None
 
+SUBDOMAINS = ['austin','newyork','sfbay','philadelphia','chicago','washingtondc','portland','seattle','boston']
+SECTIONS = ['roo','sub','hsw','swp','vac','prk','off','rea']
 
 def sink(queue, fn = '/tmp/sublets.csv'):
     fieldnames = [
@@ -42,14 +44,22 @@ def sink(queue, fn = '/tmp/sublets.csv'):
 def main():
     queue = Queue()
     threading.Thread(target = sink, args = (queue,)).start()
-    for subdomain in ['austin','newyork','sfbay','philadelphia','chicago','washingtondc','portland','seattle','boston']:
-        for sectionslug in ['roo','sub','hsw','swp','vac','prk','off','rea']:
-#   for subdomain in ['austin']:
-#       for sectionslug in ['roo']:
-            t = threading.Thread(target = search_section, args = (subdomain, sectionslug, queue))
+    for subdomain in SUBDOMAINS:
+        for sectionslug in SECTIONS:
+            t = threading.Thread(target = read_section, args = (subdomain, sectionslug, queue))
             t.start()
 
-def search_section(subdomain, sectionslug, queue):
+def download():
+    for subdomain in SUBDOMAINS:
+        for sectionslug in SECTIONS:
+            t = threading.Thread(target = download_section, args = (subdomain, sectionslug))
+            t.start()
+
+def download_section(subdomain, sectionslug):
+    for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
+        pass
+
+def read_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
         # Make this parallel?
         try:
@@ -67,4 +77,5 @@ def search_section(subdomain, sectionslug, queue):
         queue.put(listing)
 
 if __name__ == '__main__':
-    main()
+    download()
+    # main()
