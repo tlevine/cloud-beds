@@ -48,7 +48,7 @@ def main():
             t.start()
 
 def search_section(subdomain, sectionslug, queue):
-    for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'http'):
+    for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
         # Make this parallel?
         try:
             body = fulltext(listing)
