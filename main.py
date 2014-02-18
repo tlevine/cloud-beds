@@ -61,6 +61,7 @@ def download(queuefunc):
 
 def download_section(subdomain, sectionslug, queue):
     s = Section(subdomain, sectionslug, proxies = proxies, scheme = 'https')
+    iter(s)
     s.skip_downloaded()
     for listing in s:
         queue.put(listing)
