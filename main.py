@@ -63,6 +63,7 @@ def download_section(subdomain, sectionslug, queue):
     s = Section(subdomain, sectionslug, proxies = proxies, scheme = 'https')
     iter(s)
     s.skip_downloaded()
+    print(s.next_search_url())
     for listing in s:
         queue.put(listing)
 
