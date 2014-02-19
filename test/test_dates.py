@@ -1,17 +1,17 @@
-import is_date_range
+import dates
 import nose.tools as n
 
 def check_is_date(tokens, expectation):
-    n.assert_equal(is_date_range.is_date(tokens), expectation)
+    n.assert_equal(dates.is_date(tokens), expectation)
 
 def check_token_is_month(token, expectation):
-    n.assert_equal(is_date_range._token_is_month(token), expectation)
+    n.assert_equal(dates._token_is_month(token), expectation)
 
 def check_token_is_day_of_month(token, expectation):
-    n.assert_equal(is_date_range._token_is_day_of_month(token), expectation)
+    n.assert_equal(dates._token_is_day_of_month(token), expectation)
 
 def check_n_dates(string, expectation):
-    the_list = list(is_date_range.dates_in_tokens(string.split(' ')))
+    the_list = list(dates.dates_in_tokens(string.split(' ')))
     print(the_list)
     n.assert_equal(len(the_list), expectation)
 
@@ -96,7 +96,7 @@ def test_dates_in_tokens():
         yield check_n_dates, string, expectation
 
 def test_is_ordinal_number():
-    n.assert_false(is_date_range._is_ordinal_number('24st'))
+    n.assert_false(dates._is_ordinal_number('24st'))
 
 def test_is_date():
     for string, expectation in date_testcases:
