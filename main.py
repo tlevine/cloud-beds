@@ -51,12 +51,12 @@ def log(queue):
     for i in itertools.count(1):
         print('% 10d: %s' % (i,queue.get()['href']))
 
-def download(queuefunc):
+def download(queuefunc, subdomains = SUBDOMAINS, sections = SECTIONS):
     queue = Queue()
     threading.Thread(target = queuefunc, args = (queue,)).start()
-    for subdomain in SUBDOMAINS:
-        for sectionslug in SECTIONS:
-            t = threading.Thread(target = download_section, args = (subdomain, sectionslug, queue))
+    for subdomain in subdomains:
+        for section in sections:
+            t = threading.Thread(target = download_section, args = (subdomain, section, queue))
             t.start()
 
 def download_section(subdomain, sectionslug, queue):
@@ -83,4 +83,5 @@ def read_section(subdomain, sectionslug, queue):
 if __name__ == '__main__':
     # download(save)
     # download(count)
-    download(log)
+    # download(log)
+    download(save, subdomains = ['austin'], sections = ['sub'])
