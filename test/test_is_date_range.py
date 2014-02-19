@@ -5,7 +5,7 @@ import csv
 import lxml.html
 import nose.tools as n
 
-from is_date_range import is_date_range
+from dates import is_date_range
 
 def check_is_date_range(filename, expected):
     html = lxml.html.parse(filename).getroot()
