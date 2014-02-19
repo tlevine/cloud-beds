@@ -5,6 +5,7 @@ import re
 import itertools
 import datetime
 import csv
+import dateutil
 
 import lxml.html
 
@@ -203,3 +204,9 @@ def _token_is_year(token):
 def _ngrams(tokens, n = 7):
     l = list(tokens)
     return (l[i:i+n] for i in range(len(l)-n))
+
+def humandate(text, html):
+    ds = html.xpath('//p[text()="%s"]/time/@datetime' % text)
+    if ds != []:
+        e = dateutil.parser.parse(ds[0])
+        return int(datetime.datetime.astimezone(e).timestamp())
