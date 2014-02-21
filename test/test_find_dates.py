@@ -12,7 +12,6 @@ def check_token_is_day_of_month(token, expectation):
 
 def check_n_dates(string, expectation):
     the_list = list(dates.dates_in_tokens(string.split(' ')))
-    print(the_list)
     n.assert_equal(len(the_list), expectation)
 
 daterange_testcases = [
