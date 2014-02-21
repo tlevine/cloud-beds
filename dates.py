@@ -103,6 +103,9 @@ def dates_in_tokens(tokens):
     if current_date != []:
         yield current_date
 
+def convert_date(listdate):
+    print(listdate)
+
 def is_date(tokens: list) -> bool:
     '''
     Given a list of words, determine whether the list
