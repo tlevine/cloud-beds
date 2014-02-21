@@ -7,7 +7,7 @@ import itertools
 
 from craigsgenerator import Section, fulltext, tohtml
 
-from dates import is_date_range, dates, month
+from dates import is_date_range, dates, month, convert_date
 
 proxy_schemes = {'http_proxy','https_proxy'}
 if len(proxy_schemes.intersection(os.environ.keys())) > 0:
@@ -68,12 +68,13 @@ def read_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
         # Make this parallel?
         html = tohtml(listing)
-        print(dates(html))
         try:
             b = body(html)
         except KeyError:
             b = ''
         listing['body'] = b
+
+        listing['start'], listing['end'] = sorted((convert_date(d).isoformat() for d in dates(html)))
 
         listing['subdomain'] = subdomain
         listing['section'] = sectionslug
