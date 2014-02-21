@@ -1,2 +1,2 @@
 sublets.csv:
-	python3.3 main.py | cat
+	python3.3 table.py | cat
