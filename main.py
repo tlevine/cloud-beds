@@ -11,7 +11,7 @@ from dates import is_date_range, dates, month
 
 proxy_schemes = {'http_proxy','https_proxy'}
 if len(proxy_schemes.intersection(os.environ.keys())) > 0:
-    proxies = {s:os.environ[s] for s in proxy_schemes if s in os.environ}
+    proxies = {s.replace('_proxy',''):os.environ[s] for s in proxy_schemes if s in os.environ}
 else:
     try:
         from config import proxies
@@ -22,6 +22,13 @@ SUBDOMAINS = ['austin','newyork','sfbay','philadelphia','chicago','washingtondc'
 SECTIONS = ['roo','sub','hsw','swp','vac','prk','off','rea']
 
 def save(queue, fn = '/tmp/sublets.csv'):
+    if os.path.exists(fn):
+        with open(fn, 'r') as fp:
+            r = csv.DictReader(fp)
+            skip = set((row['url'] for row in r))
+    else:
+        skip = set()
+
     fieldnames = [
         'subdomain','section',
         'title', 'date', 'price',
@@ -34,6 +41,8 @@ def save(queue, fn = '/tmp/sublets.csv'):
 
     for i in itertools.count(1):
         listing = queue.get()
+        print(listing)
+        break
         with open(fn, 'a') as fp:
             w = csv.DictWriter(fp, fieldnames)
             w.writerow(listing)
@@ -81,7 +90,7 @@ def read_section(subdomain, sectionslug, queue):
         queue.put(listing)
 
 if __name__ == '__main__':
-    # download(save)
+    download(save)
     # download(count)
     # download(log)
-    download(save, subdomains = ['austin'], sections = ['sub'])
+    # download(save, subdomains = ['austin'], sections = ['sub'])
