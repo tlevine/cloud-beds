@@ -77,6 +77,9 @@ def read_section(subdomain, sectionslug, queue):
         listing['section'] = sectionslug
         listing['url'] = listing['href']
 
+        print(dates(listing['body']))
+        break
+
         del(listing['href'])
         del(listing['listing'])
         queue.put(listing)
