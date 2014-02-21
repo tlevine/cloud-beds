@@ -41,8 +41,6 @@ def save(queue, fn = '/tmp/sublets.csv'):
 
     for i in itertools.count(1):
         listing = queue.get()
-        print(listing)
-        break
         with open(fn, 'a') as fp:
             w = csv.DictWriter(fp, fieldnames)
             w.writerow(listing)
