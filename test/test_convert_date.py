@@ -1,3 +1,5 @@
+import datetime
+
 import nose.tools as n
 
 from dates import convert_date
@@ -7,8 +9,8 @@ def check_convert_date(observed, expectation):
     if expectation == None:
         n.assert_equal(result, expectation)
     else:
-        expected_month, expected_day = result
-        n.assert_equal(result, datetime.date(2014, expected_month, expected_year))
+        expected_month, expected_day = expectation
+        n.assert_equal(result, datetime.date(2014, expected_month, expected_day))
 
 testcases = [
     (['May', '1'], (5, 1)),

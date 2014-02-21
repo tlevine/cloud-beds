@@ -103,8 +103,17 @@ def dates_in_tokens(tokens):
     if current_date != []:
         yield current_date
 
-def convert_date(listdate):
-    print(listdate)
+def convert_date(listdate, year = datetime.date.today().year):
+    if len(listdate) != 2:
+        return None
+
+    month, day = listdate
+    day = int(re.sub(r'[^0-9]', '', day))
+    datestring = '%d|%s|%d' % (year, month, day)
+    try:
+        return datetime.datetime.strptime(datestring, '%Y|%b|%d').date()
+    except ValueError:
+        return datetime.datetime.strptime(datestring, '%Y|%B|%d').date()
 
 def is_date(tokens: list) -> bool:
     '''
