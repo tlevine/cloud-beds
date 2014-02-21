@@ -28,16 +28,15 @@ def save(queue, fn = '/tmp/sublets.csv'):
             skip = set((row['url'] for row in r))
     else:
         skip = set()
-
-    fieldnames = [
-        'subdomain','section',
-        'title', 'date', 'price',
-        'longitude', 'latitude',
-        'url', 'body',
-    ]
-    with open(fn, 'w') as fp:
-        w = csv.DictWriter(fp, fieldnames)
-        w.writeheader()
+        fieldnames = [
+            'subdomain','section',
+            'title', 'date', 'price',
+            'longitude', 'latitude',
+            'url', 'body',
+        ]
+        with open(fn, 'x') as fp:
+            w = csv.DictWriter(fp, fieldnames)
+            w.writeheader()
 
     for i in itertools.count(1):
         listing = queue.get()
@@ -45,12 +44,6 @@ def save(queue, fn = '/tmp/sublets.csv'):
             w = csv.DictWriter(fp, fieldnames)
             w.writerow(listing)
 
-        if i % 100 == 0:
-            print('Written %d records' % i, end = '\r')
-
-def count(queue):
-    for i in itertools.count(1):
-        queue.get()
         if i % 100 == 0:
             print('Written %d records' % i, end = '\r')
 
@@ -93,7 +86,6 @@ if __name__ == '__main__':
     if one == 'save':
         download(read_section, save)
     elif one == 'download':
-        # download(download_section, count)
         download(download_section, log)
     else:
         # download(read_section, save, subdomains = ['austin'], sections = ['sub'])
