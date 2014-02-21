@@ -104,7 +104,7 @@ def dates_in_tokens(tokens):
         yield current_date
 
 def convert_date(listdate, year = datetime.date.today().year):
-    if len(listdate) != 2:
+    if listdate == None or len(listdate) != 2:
         return None
 
     month, day = listdate
