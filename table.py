@@ -68,10 +68,7 @@ def read_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
         # Make this parallel?
         html = tohtml(listing)
-
         print(dates(html))
-        break
-
         try:
             b = body(html)
         except KeyError:
