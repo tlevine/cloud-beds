@@ -5,7 +5,8 @@ import threading
 from queue import Queue
 import itertools
 
-from craigsgenerator import Section, fulltext, tohtml
+from craigsgenerator import Section, tohtml
+from craigsgenerator.parse import body
 
 from dates import is_date_range, dates, month, convert_date
 
