@@ -22,27 +22,28 @@ SUBDOMAINS = ['austin','newyork','sfbay','philadelphia','chicago','washingtondc'
 SECTIONS = ['roo','sub','hsw','swp','vac','prk','off','rea']
 
 def save(queue, fn = '/tmp/sublets.csv'):
+    fieldnames = [
+        'subdomain','section',
+        'title', 'date', 'price',
+        'longitude', 'latitude',
+        'url', 'body',
+    ]
     if os.path.exists(fn):
         with open(fn, 'r') as fp:
             r = csv.DictReader(fp)
             skip = set((row['url'] for row in r))
     else:
         skip = set()
-        fieldnames = [
-            'subdomain','section',
-            'title', 'date', 'price',
-            'longitude', 'latitude',
-            'url', 'body',
-        ]
         with open(fn, 'x') as fp:
             w = csv.DictWriter(fp, fieldnames)
             w.writeheader()
 
     for i in itertools.count(1):
         listing = queue.get()
-        with open(fn, 'a') as fp:
-            w = csv.DictWriter(fp, fieldnames)
-            w.writerow(listing)
+        if not listing['url'] in skip:
+            with open(fn, 'a') as fp:
+                w = csv.DictWriter(fp, fieldnames)
+                w.writerow(listing)
 
         if i % 100 == 0:
             print('Written %d records' % i, end = '\r')
