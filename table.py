@@ -88,7 +88,13 @@ def read_section(subdomain, sectionslug, queue):
         queue.put(listing)
 
 if __name__ == '__main__':
-    download(read_section, save)
-    # download(download_section, count)
-    # download(download_section, log)
-    # download(read_section, save, subdomains = ['austin'], sections = ['sub'])
+    import sys
+    one = sys.argv[1]
+    if one == 'save':
+        download(read_section, save)
+    elif one == 'download':
+        # download(download_section, count)
+        download(download_section, log)
+    else:
+        # download(read_section, save, subdomains = ['austin'], sections = ['sub'])
+        pass
