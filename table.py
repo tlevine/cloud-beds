@@ -5,7 +5,7 @@ import threading
 from queue import Queue
 import itertools
 
-from craigsgenerator import Section, fulltext
+from craigsgenerator import Section, fulltext, tohtml
 
 from dates import is_date_range, dates, month
 
@@ -67,18 +67,20 @@ def download_section(subdomain, sectionslug, queue):
 def read_section(subdomain, sectionslug, queue):
     for listing in Section(subdomain, sectionslug, proxies = proxies, scheme = 'https'):
         # Make this parallel?
+        html = tohtml(listing)
+
+        print(dates(html))
+        break
+
         try:
-            body = fulltext(listing)
+            b = body(html)
         except KeyError:
-            body = ''
-        listing['body'] = body
+            b = ''
+        listing['body'] = b
 
         listing['subdomain'] = subdomain
         listing['section'] = sectionslug
         listing['url'] = listing['href']
-
-        print(dates(listing['body']))
-        break
 
         del(listing['href'])
         del(listing['listing'])
