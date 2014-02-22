@@ -108,8 +108,11 @@ def convert_date(listdate, year = datetime.date.today().year):
         return None
 
     month, day = listdate
-    day = int(re.sub(r'[^0-9]', '', day))
-    datestring = '%d|%s|%d' % (year, month, day)
+    digits = re.sub(r'[^0-9]', '', day)
+    if digits == '':
+        return None
+
+    datestring = '%d|%s|%d' % (year, month, int(digits))
     try:
         return datetime.datetime.strptime(datestring, '%Y|%b|%d').date()
     except ValueError:
