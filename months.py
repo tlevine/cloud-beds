@@ -12,10 +12,10 @@ def getmonthnames():
 months = getmonthnames()
 
 def tokenize(text):
-    return filter(None, re.split(r'\W', text))
+    return [token.lower() for token in re.split(r'\W', text) if token != '']
 
 def start_end(text):
-    xs = sorted((months[word] for word in set(tokenize(text)) if word.lower() in months))
+    xs = sorted((months[word] for word in set(tokenize(text)) if word in months))
     if len(xs) == 0:
         return None
     elif len(xs) == 1:
