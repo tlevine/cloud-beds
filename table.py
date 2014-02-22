@@ -28,7 +28,7 @@ def save(queue, fn = '/tmp/sublets.csv'):
         'title', 'date', 'price',
         'longitude', 'latitude',
         'url', 'body',
-        'start','end',
+        'start', 'end',
     ]
     if os.path.exists(fn):
         with open(fn, 'r') as fp:
@@ -76,10 +76,9 @@ def read_section(subdomain, sectionslug, queue):
             b = ''
         listing['body'] = b
 
-        listing['start'], listing['end'] = sorted((convert_date(d) for d in dates(html)))
-        for step in ['start','end']:
-            if listing[step] != None:
-                listing[step] = listing[step].isoformat()
+        c = converted(dates(html))
+        if c != None:
+            listing['start'], listing['end'] = (d.isoformat() for d in c)
 
         listing['subdomain'] = subdomain
         listing['section'] = sectionslug
