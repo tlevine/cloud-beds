@@ -16,6 +16,7 @@ def test_convert_date():
     testcases = [
         (['May', '1'], (5, 1)),
         (['July'], None),
+        (['July', 'end'], None),
         (None, None),
         (['April', '1st.'], (4, 1)),
         (['March'], None),
