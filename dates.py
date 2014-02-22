@@ -67,14 +67,14 @@ def dates(html):
         postingbody = postingbodies[0].text_content()
     else:
         warnings.warn('No #postingbody found on the page')
-        return False
+        return None, None
 
     titles = html.xpath('//title')
     if len(titles) > 0:
         title = titles[0].text_content()
     else:
         warnings.warn('No <title /> found on the page')
-        return False
+        return None, None
 
     for text in [title, postingbody]:
         body = iter(text.split(' '))
