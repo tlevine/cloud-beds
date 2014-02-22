@@ -92,9 +92,9 @@ if __name__ == '__main__':
     import sys
     one = sys.argv[1]
     if one == 'save':
-        download(read_section, save)
+        # download(read_section, save)
+        download(read_section, save, subdomains = ['austin'], sections = ['sub'])
     elif one == 'download':
         download(download_section, log)
     else:
-        # download(read_section, save, subdomains = ['austin'], sections = ['sub'])
-        pass
+        print('save or download?')
