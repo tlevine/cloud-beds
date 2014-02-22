@@ -16,7 +16,7 @@ def main():
         html = lxml.html.parse(filename).getroot()
 
 def tokenize(text):
-    return re.split(r'[ -]', text)
+    return filter(None, re.split(r'\W', text))
 
 def is_date_range(html):
     postingbodies = html.xpath('id("postingbody")')

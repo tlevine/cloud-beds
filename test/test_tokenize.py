@@ -27,7 +27,7 @@ testcases = [
 ]
 
 def check_tokenize(raw, expected):
-    assert_list_equal(tokenize(raw), expected)
+    assert_list_equal(list(tokenize(raw)), expected)
 
 def test_tokenize():
     for raw, expected in testcases:
