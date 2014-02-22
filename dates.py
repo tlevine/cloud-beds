@@ -82,7 +82,6 @@ def dates(html):
     for text in [title, postingbody]:
         body = iter(tokenize(text))
         for window in _ngrams(body):
-            print(window)
             d = list(dates_in_tokens(window))
             if len(d) == 2:
                 return tuple(d)
