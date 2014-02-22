@@ -8,7 +8,7 @@ import itertools
 from craigsgenerator import Section, tohtml
 from craigsgenerator.parse import body
 
-from dates import is_date_range, dates, month, convert_dates
+from months import start_end
 
 proxy_schemes = {'http_proxy','https_proxy'}
 if len(proxy_schemes.intersection(os.environ.keys())) > 0:
@@ -76,9 +76,9 @@ def read_section(subdomain, sectionslug, queue):
             b = ''
         listing['body'] = b
 
-        c = convert_dates(dates(html))
+        c = start_end(listing['title'] + ' ' +  listing['body'])
         if c != None:
-            listing['start'], listing['end'] = (d.isoformat() for d in c)
+            listing['start'], listing['end'] = c
 
         listing['subdomain'] = subdomain
         listing['section'] = sectionslug
