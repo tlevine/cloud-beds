@@ -11,7 +11,7 @@ def check_token_is_day_of_month(token, expectation):
     n.assert_equal(dates._token_is_day_of_month(token), expectation)
 
 def check_n_dates(string, expectation):
-    the_list = list(dates.dates_in_tokens(string.split(' ')))
+    the_list = list(dates.dates_in_tokens(dates.tokenize(string)))
     n.assert_equal(len(the_list), expectation)
 
 daterange_testcases = [
@@ -36,6 +36,7 @@ daterange_testcases = [
     ('from December',1),
     ('Dec 15 - Feb 1.',2),
     ('Pool Area\nAvailable for March 1-May 31, 2014 (ask for details)\n\nWil', 2),
+    ('March 1-May 31, 2014', 2),
 ]
 
 date_testcases_lists = [

@@ -15,6 +15,9 @@ def main():
         filename = os.path.join('fixtures',row['url'].split('/')[-1])
         html = lxml.html.parse(filename).getroot()
 
+def tokenize(text):
+    return re.split(r'[ -]', text)
+
 def is_date_range(html):
     postingbodies = html.xpath('id("postingbody")')
     if len(postingbodies) > 0:
@@ -35,7 +38,7 @@ def is_date_range(html):
         if 'for the month' in text:
             return True
 
-        body = iter(text.split(' '))
+        body = iter(tokenize(text))
         for window in _ngrams(body):
 #           print(window)
             if len(list(dates_in_tokens(window))) == 2:
@@ -77,8 +80,9 @@ def dates(html):
         return None, None
 
     for text in [title, postingbody]:
-        body = iter(text.split(' '))
+        body = iter(tokenize(text))
         for window in _ngrams(body):
+            print(window)
             d = list(dates_in_tokens(window))
             if len(d) == 2:
                 return tuple(d)
@@ -90,7 +94,7 @@ def dates(html):
 
 def dates_in_tokens(tokens):
     current_date = []
-    for token in tokens:
+    for token in filter(None, tokens):
         if is_date(current_date + [token]):
             current_date.append(token)
         elif is_date(current_date):
