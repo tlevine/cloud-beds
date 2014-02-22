@@ -5,7 +5,7 @@ import re
 import itertools
 import datetime
 import csv
-import dateutil
+import dateutil.parser
 
 import lxml.html
 
@@ -230,7 +230,7 @@ def _ngrams(tokens, n = 7):
     return (l[i:i+n] for i in range(len(l)-n))
 
 def humandate(text, html):
-    ds = html.xpath('//p[text()="%s"]/time/@datetime' % text)
+    ds = html.xpath('//p[contains(text(),"%s")]/time/@datetime' % text)
     if ds != []:
         e = dateutil.parser.parse(ds[0])
         return datetime.datetime.fromtimestamp((datetime.datetime.astimezone(e).timestamp()))
