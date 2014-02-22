@@ -35,6 +35,7 @@ daterange_testcases = [
     ('January 5th. $2200',1),
     ('from December',1),
     ('Dec 15 - Feb 1.',2),
+    ('Pool Area\nAvailable for March 1-May 31, 2014 (ask for details)\n\nWil', 2),
 ]
 
 date_testcases_lists = [
