@@ -233,4 +233,4 @@ def humandate(text, html):
     ds = html.xpath('//p[text()="%s"]/time/@datetime' % text)
     if ds != []:
         e = dateutil.parser.parse(ds[0])
-        return int(datetime.datetime.astimezone(e).timestamp())
+        return datetime.datetime.fromtimestamp((datetime.datetime.astimezone(e).timestamp()))

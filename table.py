@@ -8,6 +8,7 @@ import itertools
 from craigsgenerator import Section, tohtml
 from craigsgenerator.parse import body
 
+from dates import humandate
 from months import start_end
 
 proxy_schemes = {'http_proxy','https_proxy'}
@@ -29,6 +30,7 @@ def save(queue, fn = '/tmp/sublets.csv'):
         'longitude', 'latitude',
         'url', 'body',
         'start', 'end',
+        'posted', 'updated',
     ]
     if os.path.exists(fn):
         with open(fn, 'r') as fp:
@@ -83,6 +85,10 @@ def read_section(subdomain, sectionslug, queue):
         listing['subdomain'] = subdomain
         listing['section'] = sectionslug
         listing['url'] = listing['href']
+        for datetype in ['posted','updated']:
+            hd = humandate(datetype, html)
+            if hd != None:
+                listing[datetype] = hd.isoformat()
 
         del(listing['href'])
         del(listing['listing'])
