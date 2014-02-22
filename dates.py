@@ -115,6 +115,10 @@ def convert_date(listdate, year = datetime.date.today().year):
     except ValueError:
         return datetime.datetime.strptime(datestring, '%Y|%B|%d').date()
 
+def convert_dates(dates_list, convert_date_func = convert_date):
+    converted = filter(None, map(convert_date_func, dates_list))
+    return None
+
 def is_date(tokens: list) -> bool:
     '''
     Given a list of words, determine whether the list
