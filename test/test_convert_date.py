@@ -30,8 +30,8 @@ def check_convert_dates(raw, expectation):
         n.assert_is_none(result)
     else:
         n.assert_is_not_none(result)
-        observed = tuple((x.month, x.day) for x in sorted(result))
-        n.assert_tuple_equal(observed, expected)
+        observed = tuple((x.month, x.day) for x in result)
+        n.assert_tuple_equal(observed, expectation)
 
 def test_convert_dates():
     testcases = [

@@ -116,8 +116,10 @@ def convert_date(listdate, year = datetime.date.today().year):
         return datetime.datetime.strptime(datestring, '%Y|%B|%d').date()
 
 def convert_dates(dates_list, convert_date_func = convert_date):
-    converted = filter(None, map(convert_date_func, dates_list))
-    return None
+    converted = list(filter(None, map(convert_date_func, dates_list)))
+    if len(converted) != 2:
+        return None
+    return tuple(sorted(converted))
 
 def is_date(tokens: list) -> bool:
     '''
