@@ -16,9 +16,7 @@ def tokenize(text):
 
 def start_end(text):
     xs = sorted((months[word] for word in set(tokenize(text)) if word in months))
-    if len(xs) == 0:
-        return None, None
-    elif len(xs) == 1:
-        return xs[0], xs[0]
-    else:
+    if len(xs) >= 2:
         return xs[0], xs[-1]
+    else:
+        return None, None
