@@ -23,7 +23,7 @@ to search Craigslist for these sublets and then sublet them.
 ## How to
 Set proxyies if you please, either with environment variables
 
-    export http_proxy=tlevine:hohraoeuaoeu@example.com:8080
+    export https_proxy=tlevine:hohraoeuaoeu@example.com:8080
 
 or in `config.py`. (See the [example](config.py.example).)
 
