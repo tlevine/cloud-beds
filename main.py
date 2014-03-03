@@ -6,8 +6,24 @@ from config import proxies
 DATABASES = [
     'sqlite://///cloud-sleeping.db',
 ]
-SCHEMA = '''
+TABLE = '''
 CREATE TABLE IF NOT EXISTS listings (
+  "url" TEXT NOT NULL,
+
+  "site" TEXT NOT NULL,
+  "section" TEXT NOT NULL,
+  "title" TEXT NOT NULL,
+
+  "posted" DATETIME NOT NULL,
+  "updated" DATETIME,
+  "downloaded" DATETIME NOT NULL,
+
+  "price" INTEGER,
+  "longitude" FLOAT,
+  "latitude" FLOAT,
+
+  "html" TEXT NOT NULL,
+  UNIQUE("url")
 );
 '''
 
@@ -31,4 +47,4 @@ def db(targets = DATABASES):
     while True:
         result = (yield)
         for target in targets:
-            h
+            target.execute(
