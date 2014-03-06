@@ -16,9 +16,7 @@ def main():
     next(sink)
 
     for listing in cg:
-        listing['url'] = listing['href']
-        del(listing['date'])
-        del(listing['href'])
+        print(listing['url'])
         sink.send(listing)
 
 def get(url):
