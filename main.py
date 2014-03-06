@@ -1,8 +1,10 @@
+import os
+
 from craigsgenerator import craigsgenerator
 
-from config import proxies, database
-
 from cloud_beds.db import db
+
+from config import proxies, database
 
 def main():
     cg = craigsgenerator(get = get, threads_per_section = 10, superthreaded = False,
