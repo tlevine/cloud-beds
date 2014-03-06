@@ -8,7 +8,7 @@ from config import proxies, database
 
 def main():
     cg = craigsgenerator(get = get, threads_per_section = 10, superthreaded = False,
-                         sites = ['chicago.craigslist.org'],
+                         sites = ['chicago.craigslist.org'], sections = ['sub'],
                          cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse', 'craigslist'))
 
     sink = db(database)
