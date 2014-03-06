@@ -17,3 +17,6 @@ def main():
 
 def get(url):
     return requests.get(url, proxies = proxies)
+
+if __name__ == '__main__':
+    main()
