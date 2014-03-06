@@ -4,3 +4,5 @@ password = 'hohrch2398hu2'
 
 proxy_string = 'https://%s:%s@%s' % (username, password, host)
 proxies = {'http': proxy_string, 'https':proxy_string}
+
+database = 'postgres://tlevine:password@localhost/craigslist'
