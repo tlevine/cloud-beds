@@ -5,17 +5,19 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 def db(url):
-    engine = sa.create_engine(url)
-    Base.metadata.create_all(engine)
+    try:
+        engine = sa.create_engine(url)
+        Base.metadata.create_all(engine)
 
-    Session = sessionmaker()
-    Session.configure(bind = engine)
-    session = Session()
+        Session = sessionmaker()
+        Session.configure(bind = engine)
+        session = Session()
 
-    return session
-    while True:
-        result = (yield)
-        session.add(Listing(**result))
+        while True:
+            result = (yield)
+            session.add(Listing(**result))
+            session.commit()
+    except GeneratorExit:
         session.commit()
 
 class Listing(Base):
