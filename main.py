@@ -1,6 +1,7 @@
 import os
 
 from craigsgenerator import craigsgenerator
+import requests
 
 from cloud_beds.db import db
 
