@@ -13,10 +13,15 @@ def db(url):
         Session.configure(bind = engine)
         session = Session()
 
+        query = session.query(Listing)
+
         while True:
             result = (yield)
-            session.add(Listing(**result))
-            session.commit()
+
+            # This has race conditions, but whatever.
+            if query.get(result['url']) == None:
+                session.add(Listing(**result))
+                session.flush()
     except GeneratorExit:
         session.commit()
 
