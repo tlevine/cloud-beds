@@ -5,12 +5,12 @@ import requests
 
 from cloud_beds.db import db
 
-from config import proxies, database
+from config import proxies, database, cachedir
 
 def main():
     cg = craigsgenerator(get = get, threads_per_section = 10, superthreaded = False,
                          sites = ['chicago.craigslist.org'], sections = ['sub'],
-                         cachedir = os.path.join(os.environ['HOME'], 't', 'dadawarehouse', 'craigslist'))
+                         cachedir = cachedir)
 
     sink = db(database)
     next(sink)
