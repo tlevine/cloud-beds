@@ -16,7 +16,7 @@ def main():
     next(sink)
 
     for listing in cg:
-        save(listing)
+        sink.send(listing)
 
 def get(url):
     return requests.get(url, proxies = proxies)
