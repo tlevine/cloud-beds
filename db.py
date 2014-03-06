@@ -1,39 +1,38 @@
-import sqlalchemy as
-import sqlalchemy.orm as orm
+import sqlalchemy as sa
 
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
 
-DATABASES = [
-    'sqlite://///cloud-sleeping.db',
-]
+def db(url):
+    engine = sa.create_engine(url)
+    Base.metadata.create_all(engine)
 
+    Session = sessionmaker()
+    Session.configure(bind = engine)
+    session = Session()
 
-
-
-def db(databases = DATABASES):
-    sessions = {database:session(database) for database in databases}
+    return session
     while True:
         result = (yield)
-        for session in sessions.values():
-            session
+        session.add(Listing(**result))
+        session.commit()
 
-def session(database):
-    engine = {database:sa.create_engine(database)
-    Session = orm.sessionmaker(bind = engine)
-    return Session()
+class Listing(Base):
+    __tablename__ = 'listing'
 
-class Listing(sa.Table):
-    url = sa.Column('url', sa.Text, primary_key = True),
+    url = sa.Column('url', sa.Text, primary_key = True)
 
-    site = sa.Column('url', sa.Text),
-    section = sa.Column('section', sa.Text),
-    title = sa.Column('title', sa.Text),
+    site = sa.Column('site', sa.Text)
+    section = sa.Column('section', sa.Text)
+    title = sa.Column('title', sa.Text)
 
-    posted = sa.Column('posted', sa.DateTime),
-    updated = sa.Column('updated', sa.DateTime),
-    downloaded = sa.Column('downloaded', sa.DateTime),
+    posted = sa.Column('posted', sa.DateTime)
+    updated = sa.Column('updated', sa.DateTime)
+    downloaded = sa.Column('downloaded', sa.DateTime)
 
-    price = sa.Column('price', sa.Integer),
-    longitude = sa.Column('longitude', sa.Float),
-    latitude = sa.Column('latitude', sa.Float),
+    price = sa.Column('price', sa.Integer)
+    longitude = sa.Column('longitude', sa.Float)
+    latitude = sa.Column('latitude', sa.Float)
 
-    html = sa.Column('html', sa.Text),
+    html = sa.Column('html', sa.Text)
