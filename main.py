@@ -16,7 +16,6 @@ def main():
     next(sink)
 
     for listing in cg:
-        print(listing['url'])
         sink.send(listing)
 
 def get(url):
