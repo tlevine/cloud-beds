@@ -27,7 +27,7 @@ def db(session):
             # This has race conditions, but whatever.
             if query.get(result['url']) == None:
                 session.add(Listing(**result))
-                session.flush()
+                session.commit()
     except GeneratorExit:
         pass
 
