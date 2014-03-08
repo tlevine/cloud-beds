@@ -1,2 +1,3 @@
 run:
-	shell 'export "PYTHONPATH=$$PYTHONPATH:$$PWD"'
+	sh -c 'export "PYTHONPATH=$$PYTHONPATH:$$PWD"'
+	bin/cloud-beds
