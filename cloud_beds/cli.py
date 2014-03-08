@@ -12,7 +12,6 @@ def get_generator():
     else:
         warnings.warn('I\'m not using a proxy because no https_proxy is set')
         proxies = {}
-    database = 'postgres://localhost/craigslist'
     cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse.thomaslevine.com', 'cloud-sleeping')
     sections = ['sub']
     sites = ['philadelphia.craigslist.org']
@@ -22,6 +21,7 @@ def get_generator():
                            cachedir = cachedir)
 
 def main():
+    database = 'postgres://localhost/craigslist'
     cg = get_generator()
     sink = db(get_session(database))
     next(sink)
