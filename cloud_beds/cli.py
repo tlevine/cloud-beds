@@ -12,6 +12,10 @@ def get_generator():
     else:
         warnings.warn('I\'m not using a proxy because no https_proxy is set')
         proxies = {}
+
+    def get(url):
+        return requests.get(url, proxies = proxies)
+
     cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse.thomaslevine.com', 'cloud-sleeping')
     sections = ['sub']
     sites = ['philadelphia.craigslist.org']
@@ -24,10 +28,5 @@ def main():
     database = os.environ['CLOUD_BEDS_DB']
     cg = get_generator()
     sink = db(get_session(database))
-    next(sink)
-
     for listing in cg:
         sink.send(listing)
-
-def get(url):
-    return requests.get(url, proxies = proxies)
