@@ -21,7 +21,7 @@ def get_generator():
                            cachedir = cachedir)
 
 def main():
-    database = 'postgres://localhost/craigslist'
+    database = os.environ['CLOUD_BEDS_DB']
     cg = get_generator()
     sink = db(get_session(database))
     next(sink)
