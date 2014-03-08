@@ -23,7 +23,7 @@ def db(url):
                 session.add(Listing(**result))
                 session.flush()
     except GeneratorExit:
-        session.commit()
+        pass
 
 class Listing(Base):
     __tablename__ = 'listing'
