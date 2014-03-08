@@ -1,4 +1,5 @@
 import warnings
+import os
 
 from craigsgenerator import craigsgenerator
 import requests
