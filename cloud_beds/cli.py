@@ -16,7 +16,7 @@ def get_generator():
     def get(url):
         return requests.get(url, proxies = proxies)
 
-    cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse.thomaslevine.com', 'cloud-sleeping')
+    cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse.thomaslevine.com', 'cloud-beds')
     sections = ['sub']
     sites = ['philadelphia.craigslist.org']
 
