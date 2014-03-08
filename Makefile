@@ -1,2 +1,2 @@
 run:
-	python3 main.py
+	shell 'export "PYTHONPATH=$$PYTHONPATH:$$PWD"'
