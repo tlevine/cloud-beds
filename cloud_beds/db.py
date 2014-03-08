@@ -3,9 +3,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
-from util import consumer
+from cloud_beds.util import consumer
 
-def get_session():
+def get_session(url):
     'Create a database session.'
     engine = sa.create_engine(url)
     Base.metadata.create_all(engine)
@@ -16,7 +16,7 @@ def get_session():
     return session
 
 @consumer
-def db(url, session = get_session()):
+def db(session):
     'Save to the database.'
     try:
         query = session.query(Listing)

@@ -3,7 +3,7 @@ import warnings
 from craigsgenerator import craigsgenerator
 import requests
 
-from cloud_beds.db import db
+from cloud_beds.db import db, get_session
 
 def main():
     if 'https_proxy' in os.environ:
@@ -20,7 +20,7 @@ def main():
                          sites = sites, sections = sections,
                          cachedir = cachedir)
 
-    sink = db(database)
+    sink = db(get_session(database))
     next(sink)
 
     for listing in cg:

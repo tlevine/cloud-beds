@@ -1,6 +1,6 @@
 import nose.tools as n
 
-from cloud_beds import db, Listing
+from cloud_beds.db import db, Listing
 
 class FakeSession:
     def __init__(self):
@@ -22,7 +22,7 @@ class FakeQuery:
 
 def test_db_no_save():
     session = FakeSession()
-    sink = db(url, session = session)
+    sink = db(session = session)
 
     result = {
         'url': 'http://example.com',
@@ -44,11 +44,11 @@ def test_db_no_save():
 
     sink.send(result)
     n.assert_equal(session._flushed, 1)
-    n.assert_equal(session._added = [Listing(result)])
+    n.assert_equal(session._added, [Listing(result)])
 
 def test_db_save():
     session = FakeSession()
-    sink = db(url, session = session)
+    sink = db(session = session)
 
     result = {
         'url': 'http://this.is.a.new.website.example.com',
@@ -70,4 +70,4 @@ def test_db_save():
 
     sink.send(result)
     n.assert_equal(session._flushed, 0)
-    n.assert_equal(session._added = [])
+    n.assert_equal(session._added, [])
