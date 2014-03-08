@@ -17,7 +17,7 @@ class FakeSession:
 
 class FakeQuery:
     def get(self, pk):
-        if pk == 'http://example.com':
+        if pk == 'http://example.com/this-page-has-been-saved':
             return ['Pretend this is a result.']
 
 def test_db_no_save():
@@ -25,33 +25,7 @@ def test_db_no_save():
     sink = db(session = session)
 
     result = {
-        'url': 'http://example.com',
-
-        'site': None,
-        'section': None,
-        'title': None,
-
-        'posted': None,
-        'updated': None,
-        'downloaded': None,
-
-        'price': None,
-        'longitude': None,
-        'latitude': None,
-
-        'html': None,
-    }
-
-    sink.send(result)
-    n.assert_equal(session._flushed, 1)
-    n.assert_equal(session._added, [Listing(result)])
-
-def test_db_save():
-    session = FakeSession()
-    sink = db(session = session)
-
-    result = {
-        'url': 'http://this.is.a.new.website.example.com',
+        'url': 'http://example.com/this-page-has-been-saved',
 
         'site': None,
         'section': None,
@@ -71,3 +45,34 @@ def test_db_save():
     sink.send(result)
     n.assert_equal(session._flushed, 0)
     n.assert_equal(session._added, [])
+
+def test_db_save():
+    session = FakeSession()
+    sink = db(session = session)
+
+    result = {
+        'url': 'http://example.com/this-page-has-not-been-saved',
+
+        'site': None,
+        'section': None,
+        'title': None,
+
+        'posted': None,
+        'updated': None,
+        'downloaded': None,
+
+        'price': None,
+        'longitude': None,
+        'latitude': None,
+
+        'html': None,
+    }
+
+    sink.send(result)
+    n.assert_equal(session._flushed, 1)
+    n.assert_equal(len(session._added), 1)
+
+    observed = session._added[0]
+    expected = Listing(**result)
+    for key in result:
+        n.assert_equal(getattr(observed, key), getattr(expected, key))
