@@ -1,18 +1,24 @@
 import sqlalchemy as sa
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
-def db(url):
+from util import consumer
+
+def get_session():
+    'Create a database session.'
+    engine = sa.create_engine(url)
+    Base.metadata.create_all(engine)
+
+    Session = sessionmaker()
+    Session.configure(bind = engine)
+    session = Session()
+    return session
+
+@consumer
+def db(url, session = get_session()):
+    'Save to the database.'
     try:
-        engine = sa.create_engine(url)
-        Base.metadata.create_all(engine)
-
-        Session = sessionmaker()
-        Session.configure(bind = engine)
-        session = Session()
-
         query = session.query(Listing)
 
         while True:
