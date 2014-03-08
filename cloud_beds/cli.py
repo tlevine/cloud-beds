@@ -12,7 +12,7 @@ def main():
         warnings.warn('I\'m not using a proxy because no https_proxy is set')
         proxies = {}
     database = 'postgres://localhost/craigslist'
-    cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse', 'cloud-sleeping')
+    cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse.thomaslevine.com', 'cloud-sleeping')
     sections = ['sub']
     sites = ['philadelphia.craigslist.org']
 
