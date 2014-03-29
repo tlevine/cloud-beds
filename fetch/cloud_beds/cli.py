@@ -7,10 +7,10 @@ import requests
 from cloud_beds.db import db, get_session
 
 def get_generator():
-    if 'https_proxy' in os.environ:
-        proxies = {'https': os.environ['https_proxy']}
+    if 'http_proxy' in os.environ:
+        proxies = {'http': os.environ['https_proxy']}
     else:
-        warnings.warn('I\'m not using a proxy because no https_proxy is set')
+        warnings.warn('I\'m not using a proxy because no http_proxy is set')
         proxies = {}
 
     def get(url):
@@ -21,11 +21,12 @@ def get_generator():
     sites = [
         'philadelphia.craigslist.org','newyork.craigslist.org','newyork.craigslist.org',
         'chicago.craigslist.org','washingtondc.craigslist.org','sfbay.craigslist.org',
+        'montreal.fr.craigslist.ca',
     ]
 
     return craigsgenerator(get = get, threads_per_section = 10, superthreaded = False,
                            sites = sites, sections = sections,
-                           cachedir = cachedir)
+                           cachedir = cachedir, scheme = 'http')
 
 def main():
     database = os.environ['CLOUD_BEDS_DB']
