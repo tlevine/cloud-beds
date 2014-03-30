@@ -8,7 +8,7 @@ from cloud_beds.db import db, get_session
 
 def get_generator():
     if 'http_proxy' in os.environ:
-        proxies = {'http': os.environ['https_proxy']}
+        proxies = {'http': os.environ['http_proxy']}
     else:
         warnings.warn('I\'m not using a proxy because no http_proxy is set')
         proxies = {}
