@@ -17,11 +17,11 @@ def get_generator():
         return requests.get(url, proxies = proxies)
 
     cachedir = os.path.join(os.environ['HOME'], 'dadawarehouse.thomaslevine.com', 'cloud-beds')
-    sections = ['sub','roo']
+    sections = ['sub','roo','zip','maa','tla','gra']
     sites = [
         'philadelphia.craigslist.org','newyork.craigslist.org','newyork.craigslist.org',
         'chicago.craigslist.org','washingtondc.craigslist.org','sfbay.craigslist.org',
-        'montreal.fr.craigslist.ca',
+        'montreal.fr.craigslist.ca','nashville.craigslist.org',
     ]
 
     return craigsgenerator(get = get, threads_per_section = 10, superthreaded = False,
