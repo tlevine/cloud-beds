@@ -11,7 +11,10 @@ setup(name='cloud-beds',
     ],
     packages=['cloud_beds'],
     scripts=['bin/cloud-beds'],
-    install_requires = ['requests','craigsgenerator'],
+    install_requires = [
+        'requests','craigsgenerator',
+        'sqlalchemy',
+    ],
     tests_require = ['nose'],
     version='0.0.3',
     license='AGPL'
